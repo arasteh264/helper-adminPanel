@@ -9,7 +9,7 @@ export function Showcase() {
       <Card className="rounded-lg py-0" data-landing-dashboard-preview>
         {/* biome-ignore lint/performance/noImgElement: These landing images are optimized separately. */}
         <img
-          alt="Studio Admin default dashboard with its layout customization controls open"
+          alt="پیش‌نمایش داشبورد مدیریتی استودیو ادمین با پنل تنظیمات باز"
           className="h-auto w-full rounded-lg! dark:hidden"
           height={defaultLightImage.height}
           src={defaultLightImage.src}
@@ -17,7 +17,7 @@ export function Showcase() {
         />
         {/* biome-ignore lint/performance/noImgElement: These landing images are optimized separately. */}
         <img
-          alt="Studio Admin default dashboard with its layout customization controls open"
+          alt="پیش‌نمایش داشبورد مدیریتی استودیو ادمین با پنل تنظیمات باز"
           className="hidden h-auto w-full rounded-lg! dark:block"
           height={defaultDarkImage.height}
           src={defaultDarkImage.src}

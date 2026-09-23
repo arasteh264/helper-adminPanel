@@ -72,10 +72,8 @@ export function Users({ users }: { users: UserRow[] }) {
   return (
     <Card>
       <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
-        <CardTitle className="text-xl leading-none">Users</CardTitle>
-        <CardDescription className="max-w-sm leading-snug">
-          Manage your organization members and their access.
-        </CardDescription>
+        <CardTitle className="text-xl leading-none">کاربران</CardTitle>
+        <CardDescription className="max-w-sm leading-snug">مدیریت کاربران</CardDescription>
         <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
           <InputGroup className="h-7 w-full md:w-64">
             <InputGroupAddon align="inline-start">
@@ -83,7 +81,7 @@ export function Users({ users }: { users: UserRow[] }) {
             </InputGroupAddon>
             <InputGroupInput
               className="h-7"
-              placeholder="Search users..."
+              placeholder="جستجوی کاربران..."
               value={searchQuery}
               onChange={(event) => {
                 table.getColumn("search")?.setFilterValue(event.target.value || undefined);
@@ -94,18 +92,15 @@ export function Users({ users }: { users: UserRow[] }) {
               <Kbd className="h-4 text-[10px]">⌘K</Kbd>
             </InputGroupAddon>
           </InputGroup>
-          <Button variant="outline" size="sm">
-            <SlidersHorizontal /> Hide
-          </Button>
-          <Button variant="outline" size="sm">
-            <Cog /> Customize
-          </Button>
-          <Button variant="outline" size="sm">
-            <Download /> Export
-          </Button>
-          <Button size="sm">
-            <Plus /> Add User
-          </Button>
+          {/* <Button variant="outline" size="sm">
+            <SlidersHorizontal /> پنهان‌سازی
+          </Button> */}
+          {/* <Button variant="outline" size="sm">
+            <Download /> خروجی
+          </Button> */}
+          {/* <Button size="sm">
+            <Plus /> افزودن کاربر
+          </Button> */}
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 px-0">
@@ -113,7 +108,7 @@ export function Users({ users }: { users: UserRow[] }) {
           <div className="flex flex-wrap items-center gap-3">
             <Select value={roleFilter} onValueChange={(value) => setColumnSelectFilter("role", value)}>
               <SelectTrigger size="sm">
-                <span className="text-muted-foreground">Role:</span>
+                <span className="text-muted-foreground">نقش:</span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper" align="start">
@@ -129,7 +124,7 @@ export function Users({ users }: { users: UserRow[] }) {
 
             <Select value={teamFilter} onValueChange={(value) => setColumnSelectFilter("team", value)}>
               <SelectTrigger size="sm">
-                <span className="text-muted-foreground">Team:</span>
+                <span className="text-muted-foreground">تیم:</span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper" align="start">
@@ -145,7 +140,7 @@ export function Users({ users }: { users: UserRow[] }) {
 
             <Select value={statusFilter} onValueChange={(value) => setColumnSelectFilter("status", value)}>
               <SelectTrigger size="sm">
-                <span className="text-muted-foreground">Status:</span>
+                <span className="text-muted-foreground">وضعیت:</span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper" align="start">
@@ -160,9 +155,9 @@ export function Users({ users }: { users: UserRow[] }) {
             </Select>
           </div>
 
-          <Select value={workspaceFilter} onValueChange={(value) => setColumnSelectFilter("workspace", value)}>
+          {/* <Select value={workspaceFilter} onValueChange={(value) => setColumnSelectFilter("workspace", value)}>
             <SelectTrigger size="sm">
-              <span className="text-muted-foreground">Workspace:</span>
+              <span className="text-muted-foreground">فضای کاری:</span>
               <SelectValue />
             </SelectTrigger>
             <SelectContent position="popper" align="end">
@@ -174,22 +169,11 @@ export function Users({ users }: { users: UserRow[] }) {
                 ))}
               </SelectGroup>
             </SelectContent>
-          </Select>
+          </Select> */}
         </div>
 
         <div className="flex items-center justify-between gap-3 px-4">
-          <div className="text-muted-foreground text-sm tabular-nums">{selectedCount} selected</div>
-
-          <Tabs defaultValue="list">
-            <TabsList>
-              <TabsTrigger value="list" aria-label="List view">
-                <Rows3 />
-              </TabsTrigger>
-              <TabsTrigger value="grid" aria-label="Grid view">
-                <Grid />
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="text-muted-foreground text-sm tabular-nums">{selectedCount} مورد انتخاب‌شده</div>
         </div>
 
         <UsersTable table={table} />

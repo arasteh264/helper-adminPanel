@@ -44,7 +44,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
           "min-w-0 overflow-x-clip",
         )}
       >
-        <header
+        {/* <header
           className={cn(
             "flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12",
             // Handle sticky navbar style with conditional classes so blur, background, z-index, and rounded corners remain consistent across all SidebarVariant layouts.
@@ -67,7 +67,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
               <AccountSwitcher users={users} />
             </div>
           </div>
-        </header>
+        </header> */}
         {/* Pages can set data-content-padding="false" to render full-bleed app layouts. */}
         <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden p-4 has-data-[content-padding=false]:p-0 md:p-6 md:has-data-[content-padding=false]:p-0">
           {children}
