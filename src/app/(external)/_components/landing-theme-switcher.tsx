@@ -34,7 +34,7 @@ export function LandingThemeSwitcher() {
       size="icon"
       variant="ghost"
       onClick={cycleTheme}
-      aria-label={`Current theme: ${themeMode}. Click to cycle themes`}
+      aria-label={`حالت نمایش فعلی: ${themeMode}. برای تغییر کلیک کنید`}
     >
       <Monitor className="hidden [html[data-theme-mode=system]_&]:block" />
       <Sun className="hidden dark:block [html[data-theme-mode=system]_&]:hidden" />

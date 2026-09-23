@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { users } from "./_components/data";
+import { getUsers } from "./_components/api";
 import { Users } from "./_components/users";
 
 export const metadata: Metadata = {
@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Explore an open source user management dashboard for browsing, filtering, and managing user accounts.",
 };
 
-export default function Page() {
+export default async function Page() {
+  const users = await getUsers();
+
   return <Users users={users} />;
 }

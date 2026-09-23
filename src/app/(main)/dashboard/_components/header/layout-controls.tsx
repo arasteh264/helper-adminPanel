@@ -77,15 +77,15 @@ export function LayoutControls() {
       <PopoverContent align="end">
         <div className="flex flex-col gap-5">
           <div className="space-y-1.5">
-            <h4 className="font-medium text-sm leading-none">Preferences</h4>
-            <p className="text-muted-foreground text-xs">Customize your dashboard layout preferences.</p>
+            <h4 className="font-medium text-sm leading-none">تنظیمات نمایش</h4>
+            <p className="text-muted-foreground text-xs">چیدمان و ظاهر داشبورد را شخصی‌سازی کنید.</p>
           </div>
           <div className="space-y-3 **:data-[slot=toggle-group]:w-full **:data-[slot=toggle-group-item]:flex-1 **:data-[slot=toggle-group-item]:text-xs">
             <div className="space-y-1">
-              <Label className="font-medium text-xs">Theme Preset</Label>
+              <Label className="font-medium text-xs">پوسته</Label>
               <Select value={themePreset} onValueChange={onThemePresetChange}>
                 <SelectTrigger size="sm" className="w-full text-xs">
-                  <SelectValue placeholder="Preset" />
+                  <SelectValue placeholder="انتخاب پوسته" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -106,10 +106,10 @@ export function LayoutControls() {
             </div>
 
             <div className="space-y-1">
-              <Label className="font-medium text-xs">Fonts</Label>
+              <Label className="font-medium text-xs">فونت</Label>
               <Select value={font} onValueChange={onFontChange}>
                 <SelectTrigger size="sm" className="w-full text-xs">
-                  <SelectValue placeholder="Select font" />
+                  <SelectValue placeholder="انتخاب فونت" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -124,7 +124,7 @@ export function LayoutControls() {
             </div>
 
             <div className="space-y-1">
-              <Label className="font-medium text-xs">Theme Mode</Label>
+              <Label className="font-medium text-xs">حالت نمایش</Label>
               <ToggleGroup
                 size="sm"
                 spacing={0}
@@ -134,19 +134,19 @@ export function LayoutControls() {
                 onValueChange={onThemeModeChange}
               >
                 <ToggleGroupItem value="light" aria-label="Toggle light">
-                  Light
+                  روشن
                 </ToggleGroupItem>
                 <ToggleGroupItem value="dark" aria-label="Toggle dark">
-                  Dark
+                  تاریک
                 </ToggleGroupItem>
                 <ToggleGroupItem value="system" aria-label="Toggle system">
-                  System
+                  سیستم
                 </ToggleGroupItem>
               </ToggleGroup>
             </div>
 
             <div className="space-y-1">
-              <Label className="font-medium text-xs">Page Layout</Label>
+              <Label className="font-medium text-xs">چیدمان صفحه</Label>
               <ToggleGroup
                 size="sm"
                 spacing={0}
@@ -156,16 +156,16 @@ export function LayoutControls() {
                 onValueChange={onContentLayoutChange}
               >
                 <ToggleGroupItem value="centered" aria-label="Toggle centered">
-                  Centered
+                  وسط‌چین
                 </ToggleGroupItem>
                 <ToggleGroupItem value="full-width" aria-label="Toggle full-width">
-                  Full Width
+                  تمام‌عرض
                 </ToggleGroupItem>
               </ToggleGroup>
             </div>
 
             <div className="space-y-1">
-              <Label className="font-medium text-xs">Navbar Behavior</Label>
+              <Label className="font-medium text-xs">رفتار نوار پیمایش</Label>
               <ToggleGroup
                 size="sm"
                 spacing={0}
@@ -175,16 +175,16 @@ export function LayoutControls() {
                 onValueChange={onNavbarStyleChange}
               >
                 <ToggleGroupItem value="sticky" aria-label="Toggle sticky">
-                  Sticky
+                  ثابت
                 </ToggleGroupItem>
                 <ToggleGroupItem value="scroll" aria-label="Toggle scroll">
-                  Scroll
+                  همراه با پیمایش
                 </ToggleGroupItem>
               </ToggleGroup>
             </div>
 
             <div className="space-y-1">
-              <Label className="font-medium text-xs">Sidebar Style</Label>
+              <Label className="font-medium text-xs">سبک نوار کناری</Label>
               <ToggleGroup
                 size="sm"
                 spacing={0}
@@ -194,19 +194,19 @@ export function LayoutControls() {
                 onValueChange={onSidebarStyleChange}
               >
                 <ToggleGroupItem value="inset" aria-label="Toggle inset">
-                  Inset
+                  تو‌رفته
                 </ToggleGroupItem>
                 <ToggleGroupItem value="sidebar" aria-label="Toggle sidebar">
-                  Sidebar
+                  کناری
                 </ToggleGroupItem>
                 <ToggleGroupItem value="floating" aria-label="Toggle floating">
-                  Floating
+                  شناور
                 </ToggleGroupItem>
               </ToggleGroup>
             </div>
 
             <div className="space-y-1">
-              <Label className="font-medium text-xs">Sidebar Collapse Mode</Label>
+              <Label className="font-medium text-xs">حالت جمع‌شدن نوار کناری</Label>
               <ToggleGroup
                 size="sm"
                 spacing={0}
@@ -216,16 +216,16 @@ export function LayoutControls() {
                 onValueChange={onSidebarCollapseModeChange}
               >
                 <ToggleGroupItem value="icon" aria-label="Toggle icon">
-                  Icon
+                  آیکن
                 </ToggleGroupItem>
                 <ToggleGroupItem value="offcanvas" aria-label="Toggle offcanvas">
-                  OffCanvas
+                  خارج از صفحه
                 </ToggleGroupItem>
               </ToggleGroup>
             </div>
 
             <Button type="button" size="sm" variant="outline" className="w-full text-xs" onClick={resetPreferences}>
-              Restore Defaults
+              بازگردانی پیش‌فرض‌ها
             </Button>
           </div>
         </div>

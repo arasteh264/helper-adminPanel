@@ -52,10 +52,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={sidebarItems} />
       </SidebarContent>
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <SupportCard />
         <NavUser user={rootUser} />
-      </SidebarFooter>
+      </SidebarFooter> */}
     </Sidebar>
   );
 }

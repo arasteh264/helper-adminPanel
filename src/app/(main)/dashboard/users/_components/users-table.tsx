@@ -74,7 +74,7 @@ export function UsersTable({ table }: { table: ReactTable<DataTableFeatures, Use
             ) : (
               <TableRow>
                 <TableCell colSpan={table.getVisibleLeafColumns().length} className="h-24 text-center">
-                  No results.
+                  نتیجه‌ای یافت نشد.
                 </TableCell>
               </TableRow>
             )}
@@ -87,7 +87,7 @@ export function UsersTable({ table }: { table: ReactTable<DataTableFeatures, Use
       <div className="flex items-center justify-between px-4">
         <div className="flex items-center gap-4 text-muted-foreground text-sm">
           <div className="flex items-center gap-2">
-            <span>Rows per page</span>
+            <span>تعداد ردیف در صفحه</span>
             <Select
               value={`${table.state.pagination.pageSize}`}
               onValueChange={(value) => table.setPageSize(Number(value))}
@@ -107,11 +107,11 @@ export function UsersTable({ table }: { table: ReactTable<DataTableFeatures, Use
             </Select>
           </div>
           <span>
-            Page {currentPage} of {pageCount}
+            صفحه {currentPage} از {pageCount}
           </span>
         </div>
 
-        <Pagination className="mx-0 w-auto justify-start md:justify-end">
+        <Pagination className="mx-0 w-auto justify-start md:justify-end" dir="rtl">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

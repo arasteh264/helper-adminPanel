@@ -219,6 +219,9 @@ These serve as the fallback; there is no separate default.css file. */
   html[data-font="robotoSlab"] body {
     --font-sans: var(--font-roboto-slab);
   }
+  html[data-font="vazirmatn"] body {
+    --font-sans: var(--font-vazirmatn);
+  }
   html[data-font="merriweather"] body {
     --font-sans: var(--font-merriweather);
   }
