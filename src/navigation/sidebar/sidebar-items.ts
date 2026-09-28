@@ -139,60 +139,60 @@ export const sidebarItems: NavGroup[] = [
     id: 2,
     label: "صفحات",
     items: [
-      {
-        id: "email",
-        title: "ایمیل",
-        url: "/dashboard/mail",
-        icon: Mail,
-      },
-      {
-        id: "chat",
-        title: "گفت‌وگو",
-        url: "/dashboard/chat",
-        icon: MessageSquare,
-      },
-      {
-        id: "calendar",
-        title: "تقویم",
-        url: "/dashboard/calendar",
-        icon: Calendar,
-      },
-      {
-        id: "kanban",
-        title: "کانبان",
-        url: "/dashboard/kanban",
-        icon: Kanban,
-      },
-      {
-        id: "tasks",
-        title: "وظایف",
-        url: "/dashboard/tasks",
-        icon: CheckSquare,
-      },
-      {
-        id: "invoice",
-        title: "فاکتور",
-        url: "/dashboard/invoice",
-        icon: ReceiptText,
-      },
-      {
-        id: "profile",
-        title: "پروفایل",
-        url: "/dashboard/profile",
-        icon: UserRound,
-      },
-      {
-        id: "users",
-        title: "کاربران",
-        url: "/dashboard/users",
-        icon: Users,
-      },
-      {
-        id: "roles",
-        title: "نقش‌ها",
-        url: "/dashboard/roles",
-        icon: Lock,
-      },
+      // {
+      //   id: "email",
+      //   title: "ایمیل",
+      //   url: "/dashboard/mail",
+      //   icon: Mail,
+      // },
+      // {
+      //   id: "chat",
+      //   title: "گفت‌وگو",
+      //   url: "/dashboard/chat",
+      //   icon: MessageSquare,
+      // },
+      // {
+      //   id: "calendar",
+      //   title: "تقویم",
+      //   url: "/dashboard/calendar",
+      //   icon: Calendar,
+      // },
+      // {
+      //   id: "kanban",
+      //   title: "کانبان",
+      //   url: "/dashboard/kanban",
+      //   icon: Kanban,
+      // },
+      // {
+      //   id: "tasks",
+      //   title: "وظایف",
+      //   url: "/dashboard/tasks",
+      //   icon: CheckSquare,
+      // },
+      // {
+      //   id: "invoice",
+      //   title: "فاکتور",
+      //   url: "/dashboard/invoice",
+      //   icon: ReceiptText,
+      // },
+      // {
+      //   id: "profile",
+      //   title: "پروفایل",
+      //   url: "/dashboard/profile",
+      //   icon: UserRound,
+      // },
+      // {
+      //   id: "users",
+      //   title: "کاربران",
+      //   url: "/dashboard/users",
+      //   icon: Users,
+      // },
+      // {
+      //   id: "roles",
+      //   title: "نقش‌ها",
+      //   url: "/dashboard/roles",
+      //   icon: Lock,
+      // },
       // {
       //   id: "authentication",
       //   title: "احراز هویت",
@@ -226,32 +226,46 @@ export const sidebarItems: NavGroup[] = [
       // },
     ],
   },
-  // {
-  //   id: 3,
-  //   label: "قدیمی",
-  //   items: [
-  //     {
-  //       id: "legacy-dashboards",
-  //       title: "داشبوردها",
-  //       subItems: [
-  //         {
-  //           id: "legacy-default",
-  //           title: "پیش‌فرض نسخه ۱",
-  //           url: "/dashboard/default-v1",
-  //         },
-  //         { id: "legacy-crm", title: "CRM نسخه ۱", url: "/dashboard/crm-v1" },
-  //         {
-  //           id: "legacy-finance",
-  //           title: "مالی نسخه ۱",
-  //           url: "/dashboard/finance-v1",
-  //         },
-  //         {
-  //           id: "legacy-analytics",
-  //           title: "تحلیل نسخه ۱",
-  //           url: "/dashboard/analytics-v1",
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    id: 3,
+    label: " مدیریت سرویس ها",
+    items: [
+      {
+        id: "providers",
+        title: "سرویس ها",
+        icon: Users,
+        subItems: [
+          { id: "services-list", title: "لیست  سرویس ها", url: "/dashboard/services" },
+          // { id: "pending-providers", title: "سرویس‌دهنده‌های در انتظار", url: "/dashboard/pending-providers" },
+        ],
+      },
+    ],
+  },
+  {
+    id: 4,
+    label: " مدیریت سرویس دهنگان",
+    items: [
+      {
+        id: "providers",
+        title: "سرویس دهندگان",
+        icon: Users,
+        subItems: [
+          { id: "providers-list", title: "لیست سرویس دهنگان", url: "/dashboard/providers" },
+          { id: "pending-providers", title: "سرویس‌دهنده‌های در انتظار", url: "/dashboard/pending-providers" },
+        ],
+      },
+    ],
+  },
+  {
+    id: 5,
+    label: "مدیریت کاربران",
+    items: [
+      {
+        id: "user-management",
+        title: "کاربران",
+        icon: Users,
+        subItems: [{ id: "users-list", title: "همه‌ی کاربران", url: "/dashboard/users" }],
+      },
+    ],
+  },
 ];

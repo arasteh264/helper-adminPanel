@@ -59,7 +59,7 @@ export function Users({ users }: { users: UserRow[] }) {
   const searchQuery = (table.getColumn("search")?.getFilterValue() as string | undefined) ?? "";
   const roleFilter = (table.getColumn("role")?.getFilterValue() as string | undefined) ?? filters.role[0];
   const teamFilter = (table.getColumn("team")?.getFilterValue() as string | undefined) ?? filters.team[0];
-  const statusFilter = (table.getColumn("status")?.getFilterValue() as string | undefined) ?? filters.status[0];
+  // const statusFilter = (table.getColumn("status")?.getFilterValue() as string | undefined) ?? filters.status[0];
   const workspaceFilter =
     (table.getColumn("workspace")?.getFilterValue() as string | undefined) ?? filters.workspace[0];
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
@@ -138,7 +138,7 @@ export function Users({ users }: { users: UserRow[] }) {
               </SelectContent>
             </Select>
 
-            <Select value={statusFilter} onValueChange={(value) => setColumnSelectFilter("status", value)}>
+            {/* <Select value={statusFilter} onValueChange={(value) => setColumnSelectFilter("status", value)}>
               <SelectTrigger size="sm">
                 <span className="text-muted-foreground">وضعیت:</span>
                 <SelectValue />
@@ -152,7 +152,7 @@ export function Users({ users }: { users: UserRow[] }) {
                   ))}
                 </SelectGroup>
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
 
           {/* <Select value={workspaceFilter} onValueChange={(value) => setColumnSelectFilter("workspace", value)}>
