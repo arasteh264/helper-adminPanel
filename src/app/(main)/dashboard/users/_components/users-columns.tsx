@@ -1,11 +1,9 @@
 "use client";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Subscribe } from "@tanstack/react-table";
-import { cn } from "cn";
 import { parse } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { DataTableFeatures } from "@/lib/data-table-features";
 
-import { statusMeta, type UserRow } from "./data";
+import type { UserRow } from "./data";
 
 function StatusBadge({ status }: { status: UserRow["status"] }) {
   // const meta = statusMeta[status];

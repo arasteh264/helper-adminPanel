@@ -1,8 +1,7 @@
 "use client";
 import { useTransition } from "react";
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { Subscribe } from "@tanstack/react-table";
+import { type ColumnDef, Subscribe } from "@tanstack/react-table";
 import { Check, MoreHorizontal, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -75,7 +74,9 @@ function ProviderActions({ provider }: { provider: ProviderRow }) {
           onSelect={() => {
             // TODO: به‌جای prompt از یک Dialog با فیلد دلیل رد استفاده کن
             const note = window.prompt("دلیل رد درخواست؟");
-            if (note) run(() => rejectProvider(provider.id, note), "درخواست رد شد");
+            if (note) {
+              run(() => rejectProvider(provider.id, note), "درخواست رد شد");
+            }
           }}
         >
           <X /> رد درخواست
@@ -85,118 +86,127 @@ function ProviderActions({ provider }: { provider: ProviderRow }) {
   );
 }
 
-export const providersColumns: ColumnDef<DataTableFeatures, ProviderRow>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Subscribe
-          source={table.atoms.rowSelection}
-          selector={() =>
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected() && "indeterminate")
-          }
-        >
-          {(checked) => (
-            <Checkbox
-              aria-label="انتخاب همه"
-              checked={checked}
-              onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            />
-          )}
-        </Subscribe>
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Subscribe source={row.table.atoms.rowSelection} selector={(selection) => Boolean(selection?.[row.id])}>
-          {(checked) => (
-            <Checkbox
-              aria-label={`انتخاب ${row.original.user.name}`}
-              checked={checked}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-            />
-          )}
-        </Subscribe>
-      </div>
-    ),
-    enableHiding: false,
-    enableSorting: false,
-  },
-  {
-    id: "search",
-    accessorFn: (row) => `${row.user.name} ${row.user.email} ${row.user.phone}`,
-    filterFn: "includesString",
-    enableHiding: true,
-  },
-  {
-    id: "name",
-    accessorFn: (row) => row.user.name,
-    header: "سرویس‌دهنده",
-    cell: ({ row }) => {
-      const { user, avatarUrl } = row.original;
-      return (
-        <div className="flex items-center gap-3">
-          <Avatar className="size-8">
-            <AvatarImage src={avatarUrl ?? undefined} alt={user.name} />
-            <AvatarFallback>{user.name.slice(0, 1)}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <span className="font-medium text-sm">{user.name}</span>
-            <span className="text-muted-foreground text-xs">{user.email}</span>
+// از یک آرایه‌ی ثابت به یک factory function تبدیل شد تا بتونیم کال‌بک باز کردن
+// Dialog بررسی مدارک رو از کامپوننت والد (providers.tsx) بهش پاس بدیم
+export function providersColumns(
+  onSelectProvider: (provider: ProviderRow) => void,
+): ColumnDef<DataTableFeatures, ProviderRow>[] {
+  return [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <div className="flex items-center justify-center">
+          <Subscribe
+            source={table.atoms.rowSelection}
+            selector={() => table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+          >
+            {(checked) => (
+              <Checkbox
+                aria-label="انتخاب همه"
+                checked={checked}
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+              />
+            )}
+          </Subscribe>
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center justify-center">
+          <Subscribe source={row.table.atoms.rowSelection} selector={(selection) => Boolean(selection?.[row.id])}>
+            {(checked) => (
+              <Checkbox
+                aria-label={`انتخاب ${row.original.user.name}`}
+                checked={checked}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+              />
+            )}
+          </Subscribe>
+        </div>
+      ),
+      enableHiding: false,
+      enableSorting: false,
+    },
+    {
+      id: "search",
+      accessorFn: (row) => `${row.user.name} ${row.user.email} ${row.user.phone}`,
+      filterFn: "includesString",
+      enableHiding: false,
+    },
+    {
+      id: "name",
+      accessorFn: (row) => row.user.name,
+      header: "سرویس‌دهنده",
+      cell: ({ row }) => {
+        const { user, avatarUrl } = row.original;
+        return (
+          <button
+            type="button"
+            className="flex cursor-pointer items-center gap-3 text-start"
+            onClick={() => onSelectProvider(row.original)}
+          >
+            <Avatar className="size-8">
+              <AvatarImage src={avatarUrl ?? undefined} alt={user.name} />
+              <AvatarFallback>{user.name.slice(0, 1)}</AvatarFallback>
+            </Avatar>
+            <span className="flex flex-col">
+              <span className="font-medium text-sm">{user.name}</span>
+              <span className="text-muted-foreground text-xs">{user.email}</span>
+            </span>
+          </button>
+        );
+      },
+    },
+    {
+      id: "phone",
+      accessorFn: (row) => row.user.phone,
+      header: "شماره تماس",
+      cell: ({ row }) => (
+        <div className="text-sm tabular-nums" dir="ltr">
+          {row.original.user.phone}
+        </div>
+      ),
+    },
+    {
+      id: "skills",
+      accessorFn: (row) => row.skills.map((s) => s.name).join(" "),
+      header: "مهارت‌ها",
+      enableSorting: false,
+      cell: ({ row }) => {
+        const { skills } = row.original;
+        if (!skills.length) {
+          return <span className="text-muted-foreground text-sm">—</span>;
+        }
+        return (
+          <div className="flex flex-wrap gap-1">
+            {skills.slice(0, 2).map((skill) => (
+              <Badge key={skill.id} variant="secondary">
+                {skill.name}
+              </Badge>
+            ))}
+            {skills.length > 2 ? <Badge variant="outline">+{skills.length - 2}</Badge> : null}
           </div>
-        </div>
-      );
+        );
+      },
     },
-  },
-  {
-    id: "phone",
-    accessorFn: (row) => row.user.phone,
-    header: "شماره تماس",
-    cell: ({ row }) => (
-      <div className="text-sm tabular-nums" dir="ltr">
-        {row.original.user.phone}
-      </div>
-    ),
-  },
-  {
-    id: "skills",
-    accessorFn: (row) => row.skills.map((s) => s.name).join(" "),
-    header: "مهارت‌ها",
-    enableSorting: false,
-    cell: ({ row }) => {
-      const { skills } = row.original;
-      if (!skills.length) return <span className="text-muted-foreground text-sm">—</span>;
-      return (
-        <div className="flex flex-wrap gap-1">
-          {skills.slice(0, 2).map((skill) => (
-            <Badge key={skill.id} variant="secondary">
-              {skill.name}
-            </Badge>
-          ))}
-          {skills.length > 2 ? <Badge variant="outline">+{skills.length - 2}</Badge> : null}
-        </div>
-      );
+    {
+      id: "availability",
+      accessorFn: (row) => (row.isAvailable ? "available" : "unavailable"),
+      header: "وضعیت فعالیت",
+      filterFn: "equalsString",
+      cell: ({ row }) => <AvailabilityBadge available={row.original.isAvailable} />,
     },
-  },
-  {
-    id: "availability",
-    accessorFn: (row) => (row.isAvailable ? "available" : "unavailable"),
-    header: "وضعیت فعالیت",
-    filterFn: "equalsString",
-    cell: ({ row }) => <AvailabilityBadge available={row.original.isAvailable} />,
-  },
-  {
-    id: "createdAt",
-    accessorFn: (row) => new Date(row.createdAt).getTime(),
-    header: "تاریخ ثبت‌نام",
-    cell: ({ row }) => <div className="text-sm">{dateFormatter.format(new Date(row.original.createdAt))}</div>,
-  },
-  {
-    id: "actions",
-    header: () => <div className="text-start">عملیات</div>,
-    cell: ({ row }) => <ProviderActions provider={row.original} />,
-    enableHiding: false,
-    enableSorting: false,
-  },
-];
+    {
+      id: "createdAt",
+      accessorFn: (row) => new Date(row.createdAt).getTime(),
+      header: "تاریخ ثبت‌نام",
+      cell: ({ row }) => <div className="text-sm">{dateFormatter.format(new Date(row.original.createdAt))}</div>,
+    },
+    {
+      id: "actions",
+      header: () => <div className="text-start">عملیات</div>,
+      cell: ({ row }) => <ProviderActions provider={row.original} />,
+      enableHiding: false,
+      enableSorting: false,
+    },
+  ];
+}

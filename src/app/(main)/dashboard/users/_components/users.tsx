@@ -8,14 +8,12 @@ import {
   type SortingState,
   useTable,
 } from "@tanstack/react-table";
-import { Cog, Download, Grid, Plus, Rows3, Search, SlidersHorizontal } from "lucide-react";
+import { Search } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Kbd } from "@/components/ui/kbd";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dataTableFeatures } from "@/lib/data-table-features";
 
 import { filters, type UserRow } from "./data";
