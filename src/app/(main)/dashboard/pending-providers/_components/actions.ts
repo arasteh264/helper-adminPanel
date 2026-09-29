@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 
 type ActionResult = { ok: boolean };
 
-async function updateVerification(id: string, status: "APPROVED" | "REJECTED", note?: string): Promise<ActionResult> {
+async function updateVerification(_id: string, status: "APPROVED" | "REJECTED", note?: string): Promise<ActionResult> {
   const token = (await cookies()).get("access_token")?.value;
 
   const res = await fetch(`${process.env.API_URL}/admin/providers/pending`, {
