@@ -18,10 +18,10 @@ import { Kbd } from "@/components/ui/kbd";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { dataTableFeatures } from "@/lib/data-table-features";
 
-import type { ProviderRow } from "../data";
-import { ProviderReviewDialog } from "../provider-review-dialog";
-import { providersColumns } from "../providers-columns";
-import { ProvidersTable } from "../providers-table";
+import type { ProviderRow } from "./data";
+import { ProviderReviewDialog } from "./provider-review-dialog";
+import { providersColumns } from "./providers-columns";
+import { ProvidersTable } from "./providers-table";
 import { usePendingProviders } from "./use-providers";
 
 // بیرون از کامپوننت، تا در هر رندر آرایه‌ی جدید ساخته نشه
