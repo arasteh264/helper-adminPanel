@@ -20,14 +20,8 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-function onSubmit(data: z.infer<typeof formSchema>) {
-  toast("You submitted the following values", {
-    description: (
-      <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-        <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-      </pre>
-    ),
-  });
+function onSubmit() {
+  toast.error("ثبت‌نام از پنل مدیران در دسترس نیست؛ برای دریافت دسترسی با مدیر سامانه تماس بگیرید.");
 }
 
 export function RegisterForm() {

@@ -29,7 +29,7 @@ export default function LoginV1() {
           <div className="space-y-4 text-center">
             <div className="font-medium tracking-tight">ورود</div>
             <div className="mx-auto max-w-xl text-muted-foreground">
-              برای ورود از طریق ایمیل و رمز عبور خود استفاده کنید یا از طریق گوگل وارد شوید.
+              برای ورود مدیر، ایمیل یا شماره موبایل و رمز عبور را وارد کنید.
             </div>
           </div>
           <div className="space-y-4">

@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 
-import type { UserRow } from "./data";
+import type { UserRole, UserRow, UserStatus } from "./data";
 
 const API_URL = process.env.API_URL ?? "http://localhost:3005";
 
@@ -9,8 +9,8 @@ type ApiUser = {
   _name: string;
   _email: string;
   _phone: string;
-  _role: string;
-  _status: string;
+  _role: UserRole;
+  _status: UserStatus;
   createdAt: string;
   _updatedAt: string;
 };
@@ -20,20 +20,16 @@ type ApiUsersResponse = {
   total: number;
 };
 
-function toTitleCase(value: string) {
-  return value.charAt(0) + value.slice(1).toLowerCase();
-}
-
 function mapUser(user: ApiUser): UserRow {
   return {
     id: user.id,
     name: user._name,
     email: user._email,
     phone: user._phone,
-    role: user._role as UserRow["role"],
+    role: user._role,
     // team: "-",
     // workspace: [],
-    status: toTitleCase(user._status) as UserRow["status"],
+    status: user._status,
     joinedDate: format(new Date(user.createdAt), "dd MMM yyyy, h:mm a"),
     // lastActive: Math.floor((Date.now() - new Date(user._updatedAt).getTime()) / 60000),
   };

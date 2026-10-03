@@ -17,6 +17,12 @@ export async function apiFetch<T>(path: string, token: string, init?: RequestIni
     },
   });
 
-  if (!res.ok) throw new ApiError(res.status, `Request failed (${res.status})`);
+  if (!res.ok) {
+    const errorBody = (await res.json().catch(() => null)) as {
+      message?: string | string[];
+    } | null;
+    const message = Array.isArray(errorBody?.message) ? errorBody.message.join("، ") : errorBody?.message;
+    throw new ApiError(res.status, message || `درخواست ناموفق بود (${res.status})`);
+  }
   return res.status === 204 ? (undefined as T) : ((await res.json()) as T);
 }

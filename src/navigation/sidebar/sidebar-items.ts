@@ -1,5 +1,6 @@
 import {
   Banknote,
+  BookOpenCheck,
   ChartBar,
   FolderOpen,
   Forklift,
@@ -9,8 +10,10 @@ import {
   LayoutDashboard,
   ListTodo,
   type LucideIcon,
+  MessageSquareText,
   Server,
   ShoppingBag,
+  Stethoscope,
   Users,
 } from "lucide-react";
 
@@ -225,7 +228,17 @@ export const sidebarItems: NavGroup[] = [
         title: "سرویس ها",
         icon: Users,
         subItems: [
-          { id: "services-list", title: "لیست  سرویس ها", url: "/dashboard/services" },
+          {
+            id: "services-list",
+            title: "لیست  سرویس ها",
+            url: "/dashboard/services",
+          },
+          {
+            id: "conversation-management",
+            title: "مدیریت گفتگوها",
+            url: "/dashboard/conversations",
+            icon: MessageSquareText,
+          },
           // { id: "pending-providers", title: "سرویس‌دهنده‌های در انتظار", url: "/dashboard/pending-providers" },
         ],
       },
@@ -240,8 +253,16 @@ export const sidebarItems: NavGroup[] = [
         title: "سرویس دهندگان",
         icon: Users,
         subItems: [
-          { id: "providers-list", title: "لیست سرویس دهنگان", url: "/dashboard/providers" },
-          { id: "pending-providers", title: "سرویس‌دهنده‌های در انتظار", url: "/dashboard/pending-providers" },
+          {
+            id: "providers-list",
+            title: "لیست سرویس دهنگان",
+            url: "/dashboard/providers",
+          },
+          {
+            id: "pending-providers",
+            title: "سرویس‌دهنده‌های در انتظار",
+            url: "/dashboard/pending-providers",
+          },
         ],
       },
     ],
@@ -255,6 +276,30 @@ export const sidebarItems: NavGroup[] = [
         title: "کاربران",
         icon: Users,
         subItems: [{ id: "users-list", title: "همه‌ی کاربران", url: "/dashboard/users" }],
+      },
+    ],
+  },
+  {
+    id: 6,
+    label: "مدیریت تخصص‌ها",
+    items: [
+      {
+        id: "specialty-management",
+        title: "گروه‌ها و تخصص‌ها",
+        url: "/dashboard/specialties",
+        icon: Stethoscope,
+      },
+    ],
+  },
+  {
+    id: 7,
+    label: "حسابداری",
+    items: [
+      {
+        id: "accounting-management",
+        title: "پرداخت و برداشت‌ها",
+        url: "/dashboard/accounting",
+        icon: BookOpenCheck,
       },
     ],
   },
