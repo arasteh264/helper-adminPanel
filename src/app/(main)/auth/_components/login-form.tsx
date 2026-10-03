@@ -27,23 +27,22 @@ export function LoginForm() {
   });
 
   async function onSubmit(data: LoginFormValues) {
-    const result = await signIn("credentials", {
-      identifier: data.identifier,
-      password: data.password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        identifier: data.identifier,
+        password: data.password,
+        redirect: false,
+      });
 
-    if (!result) {
-      toast.error("خطایی در ورود رخ داد");
-      return;
+      if (!result.ok) {
+        toast.error("اطلاعات ورود معتبر نیست یا حساب شما دسترسی ادمین ندارد");
+        return;
+      }
+
+      window.location.assign("/dashboard");
+    } catch {
+      toast.error("ارتباط با سرویس ورود برقرار نشد؛ اتصال API را بررسی کنید.");
     }
-
-    if (!result.ok) {
-      toast.error("ایمیل/شماره موبایل یا رمز عبور اشتباه است");
-      return;
-    }
-
-    window.location.href = "/dashboard";
   }
 
   return (

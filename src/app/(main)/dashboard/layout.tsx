@@ -1,14 +1,19 @@
 import type { ReactNode } from "react";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { cn } from "cn";
 
 import { AppSidebar } from "@/app/(main)/dashboard/_components/sidebar/app-sidebar";
+import { auth } from "@/auth";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getPreference } from "@/server/server-actions";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
+  const session = await auth();
+  if (!session?.accessToken) redirect("/auth/v2/login");
+
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
   const [variant, collapsible] = await Promise.all([

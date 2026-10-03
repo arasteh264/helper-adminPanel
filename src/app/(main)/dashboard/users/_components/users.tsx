@@ -16,7 +16,7 @@ import { Kbd } from "@/components/ui/kbd";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { dataTableFeatures } from "@/lib/data-table-features";
 
-import { filters, type UserRow } from "./data";
+import { filters, roleLabels, statusMeta, type UserRow } from "./data";
 import { usersColumns } from "./users-columns";
 import { UsersTable } from "./users-table";
 
@@ -24,10 +24,7 @@ export function Users({ users }: { users: UserRow[] }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "joinedDate", desc: true }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<ColumnVisibilityState>({
-    search: false,
-    team: false,
-  });
+  const [columnVisibility, setColumnVisibility] = React.useState<ColumnVisibilityState>({ search: false });
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -44,7 +41,7 @@ export function Users({ users }: { users: UserRow[] }) {
       columnVisibility,
       pagination,
     },
-    getRowId: (row) => row.email,
+    getRowId: (row) => row.id,
     autoResetPageIndex: false,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -56,10 +53,7 @@ export function Users({ users }: { users: UserRow[] }) {
 
   const searchQuery = (table.getColumn("search")?.getFilterValue() as string | undefined) ?? "";
   const roleFilter = (table.getColumn("role")?.getFilterValue() as string | undefined) ?? filters.role[0];
-  const teamFilter = (table.getColumn("team")?.getFilterValue() as string | undefined) ?? filters.team[0];
-  // const statusFilter = (table.getColumn("status")?.getFilterValue() as string | undefined) ?? filters.status[0];
-  const workspaceFilter =
-    (table.getColumn("workspace")?.getFilterValue() as string | undefined) ?? filters.workspace[0];
+  const statusFilter = (table.getColumn("status")?.getFilterValue() as string | undefined) ?? filters.status[0];
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
 
   function setColumnSelectFilter(columnId: string, value: string) {
@@ -90,15 +84,6 @@ export function Users({ users }: { users: UserRow[] }) {
               <Kbd className="h-4 text-[10px]">⌘K</Kbd>
             </InputGroupAddon>
           </InputGroup>
-          {/* <Button variant="outline" size="sm">
-            <SlidersHorizontal /> پنهان‌سازی
-          </Button> */}
-          {/* <Button variant="outline" size="sm">
-            <Download /> خروجی
-          </Button> */}
-          {/* <Button size="sm">
-            <Plus /> افزودن کاربر
-          </Button> */}
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 px-0">
@@ -113,30 +98,13 @@ export function Users({ users }: { users: UserRow[] }) {
                 <SelectGroup>
                   {filters.role.map((option) => (
                     <SelectItem key={option} value={option}>
-                      {option}
+                      {option === "All" ? "همه نقش‌ها" : roleLabels[option]}
                     </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
-
-            <Select value={teamFilter} onValueChange={(value) => setColumnSelectFilter("team", value)}>
-              <SelectTrigger size="sm">
-                <span className="text-muted-foreground">تیم:</span>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper" align="start">
-                <SelectGroup>
-                  {filters.team.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            {/* <Select value={statusFilter} onValueChange={(value) => setColumnSelectFilter("status", value)}>
+            <Select value={statusFilter} onValueChange={(value) => setColumnSelectFilter("status", value)}>
               <SelectTrigger size="sm">
                 <span className="text-muted-foreground">وضعیت:</span>
                 <SelectValue />
@@ -145,35 +113,17 @@ export function Users({ users }: { users: UserRow[] }) {
                 <SelectGroup>
                   {filters.status.map((option) => (
                     <SelectItem key={option} value={option}>
-                      {option}
+                      {option === "All" ? "همه وضعیت‌ها" : statusMeta[option].label}
                     </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
-            </Select> */}
+            </Select>
           </div>
-
-          {/* <Select value={workspaceFilter} onValueChange={(value) => setColumnSelectFilter("workspace", value)}>
-            <SelectTrigger size="sm">
-              <span className="text-muted-foreground">فضای کاری:</span>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper" align="end">
-              <SelectGroup>
-                {filters.workspace.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select> */}
         </div>
-
         <div className="flex items-center justify-between gap-3 px-4">
           <div className="text-muted-foreground text-sm tabular-nums">{selectedCount} مورد انتخاب‌شده</div>
         </div>
-
         <UsersTable table={table} />
       </CardContent>
     </Card>

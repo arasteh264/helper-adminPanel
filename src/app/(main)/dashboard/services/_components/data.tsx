@@ -2,7 +2,9 @@
 export type ServiceRequestStatus =
   | "OPEN"
   | "OFFER_ACCEPTED"
+  | "CUSTOMER_CONFIRMATION_PENDING"
   | "IN_PROGRESS"
+  | "AWAITING_CUSTOMER_CONFIRMATION"
   | "COMPLETED"
   | "CANCELLED"
   | "EXPIRED"
@@ -30,8 +32,19 @@ export type ServiceRequestRow = {
 
 export const statusMeta: Record<ServiceRequestStatus, { label: string; dotClass: string }> = {
   OPEN: { label: "باز", dotClass: "bg-blue-500" },
-  OFFER_ACCEPTED: { label: "پیشنهاد پذیرفته\u200cشده", dotClass: "bg-indigo-500" },
+  OFFER_ACCEPTED: {
+    label: "پیشنهاد پذیرفته\u200cشده",
+    dotClass: "bg-indigo-500",
+  },
+  CUSTOMER_CONFIRMATION_PENDING: {
+    label: "در انتظار تأیید مشتری",
+    dotClass: "bg-cyan-600",
+  },
   IN_PROGRESS: { label: "در حال انجام", dotClass: "bg-amber-500" },
+  AWAITING_CUSTOMER_CONFIRMATION: {
+    label: "در انتظار تأیید نهایی",
+    dotClass: "bg-teal-600",
+  },
   COMPLETED: { label: "انجام\u200cشده", dotClass: "bg-emerald-500" },
   CANCELLED: { label: "لغوشده", dotClass: "bg-muted-foreground" },
   EXPIRED: { label: "منقضی\u200cشده", dotClass: "bg-muted-foreground" },

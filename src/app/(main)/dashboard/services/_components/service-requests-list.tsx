@@ -59,13 +59,22 @@ export function ServiceRequestsList() {
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "createdAt", desc: true }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<ColumnVisibilityState>({ search: false });
-  const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const table = useTable({
     features: dataTableFeatures,
     data: requests,
     columns: serviceRequestsColumns,
-    state: { rowSelection, sorting, columnFilters, columnVisibility, pagination },
+    state: {
+      rowSelection,
+      sorting,
+      columnFilters,
+      columnVisibility,
+      pagination,
+    },
     getRowId: (row) => row.id,
     autoResetPageIndex: false,
     enableRowSelection: true,
@@ -131,7 +140,9 @@ export function ServiceRequestsList() {
                 <SelectItem value="All">همه</SelectItem>
                 <SelectItem value="OPEN">باز</SelectItem>
                 <SelectItem value="OFFER_ACCEPTED">پیشنهاد پذیرفته‌شده</SelectItem>
+                <SelectItem value="CUSTOMER_CONFIRMATION_PENDING">در انتظار تأیید مشتری</SelectItem>
                 <SelectItem value="IN_PROGRESS">در حال انجام</SelectItem>
+                <SelectItem value="AWAITING_CUSTOMER_CONFIRMATION">در انتظار تأیید نهایی</SelectItem>
                 <SelectItem value="COMPLETED">انجام‌شده</SelectItem>
                 <SelectItem value="CANCELLED">لغوشده</SelectItem>
                 <SelectItem value="EXPIRED">منقضی‌شده</SelectItem>
