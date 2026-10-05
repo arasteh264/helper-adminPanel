@@ -70,7 +70,7 @@ export type WalletConfiguration = {
 };
 
 export const transactionTypeLabels: Record<WalletTransactionType, string> = {
-  EARNING: "درآمد Provider",
+  EARNING: "درآمد سرویس‌دهنده",
   COMMISSION: "کمیسیون پلتفرم",
   PAYOUT_REQUEST: "درخواست برداشت",
   PAYOUT_REFUND: "بازگشت برداشت",

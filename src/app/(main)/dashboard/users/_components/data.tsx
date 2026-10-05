@@ -10,11 +10,6 @@ export type UserRow = {
   joinedDate: string;
 };
 
-export const filters = {
-  role: ["All", "CUSTOMER", "PROVIDER", "ADMIN"] as const,
-  status: ["All", "ACTIVE", "INACTIVE", "SUSPENDED"] as const,
-};
-
 export const roleLabels: Record<UserRole, string> = {
   CUSTOMER: "مشتری",
   PROVIDER: "ارائه‌دهنده",

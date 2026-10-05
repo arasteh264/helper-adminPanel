@@ -14,14 +14,19 @@ export default function LoginV2() {
     <>
       <div className="mx-auto flex w-full flex-col justify-center space-y-8 sm:w-87.5">
         <div className="space-y-2 text-center">
-          <h1 className="font-medium text-3xl">ورود مدیر</h1>
-          <p className="text-muted-foreground text-sm">برای ورود به پنل، اطلاعات حساب ادمین را وارد کنید.</p>
+          <span className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <span className="font-bold text-xl">ه</span>
+          </span>
+          <h1 className="font-bold text-3xl">خوش آمدید</h1>
+          <p className="text-muted-foreground text-sm">برای ورود امن به پنل مدیریت، اطلاعات حساب مدیر را وارد کنید.</p>
         </div>
-        <LoginForm />
+        <div className="rounded-2xl border border-border/80 bg-background p-5 shadow-sm sm:p-6">
+          <LoginForm />
+        </div>
       </div>
 
       <div className="absolute bottom-5 flex w-full justify-center px-10">
-        <div className="text-sm">{APP_CONFIG.copyright}</div>
+        <div className="text-muted-foreground text-sm">{APP_CONFIG.copyright}</div>
       </div>
     </>
   );

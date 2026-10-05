@@ -3,9 +3,7 @@
 @import "shadcn/tailwind.css";
 
 /* Theme preset styles: these override CSS variables based on the selected data-theme-preset */
-@import "../styles/presets/brutalist.css";
-@import "../styles/presets/soft-pop.css";
-@import "../styles/presets/tangerine.css";
+@import "../styles/presets/helpermi.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -24,6 +22,7 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -55,76 +54,78 @@
 /* Default theme styles (used when no data-theme-preset is set or when 'default' is selected).
 These serve as the fallback; there is no separate default.css file. */
 :root {
-  --radius: 0.625rem;
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.875rem;
+  --background: #f7f8f6;
+  --foreground: #13201b;
+  --card: #f7faf9;
+  --card-foreground: #13201b;
+  --popover: #f7faf9;
+  --popover-foreground: #13201b;
+  --primary: #1f7a5c;
+  --primary-hover: #17614a;
+  --primary-foreground: #f7f8f6;
+  --secondary: #e7ece9;
+  --secondary-foreground: #13201b;
+  --muted: #edf2ef;
+  --muted-foreground: #5e6d66;
+  --accent: #e5f1eb;
+  --accent-foreground: #17614a;
+  --destructive: #c1443a;
+  --border: #e7ece9;
+  --input: #e7ece9;
+  --ring: #1f7a5c;
+  --chart-1: #1f7a5c;
+  --chart-2: #4d9c7e;
+  --chart-3: #7eb79e;
+  --chart-4: #c08a52;
+  --chart-5: #6b8377;
+  --sidebar: #edf3ef;
+  --sidebar-foreground: #13201b;
+  --sidebar-primary: #1f7a5c;
+  --sidebar-primary-foreground: #f7f8f6;
+  --sidebar-accent: #e1eee7;
+  --sidebar-accent-foreground: #17614a;
+  --sidebar-border: #dfe9e3;
+  --sidebar-ring: #1f7a5c;
 
   /* fonts */
-  --font-sans: var(--font-geist);
+  --font-sans: var(--font-vazirmatn);
   --font-mono: var(--font-geist-mono);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0e1512;
+  --foreground: #f3f7f5;
+  --card: #16211c;
+  --card-foreground: #f3f7f5;
+  --popover: #16211c;
+  --popover-foreground: #f3f7f5;
+  --primary: #1f7a5c;
+  --primary-hover: #2b946e;
+  --primary-foreground: #f7f8f6;
+  --secondary: #23302a;
+  --secondary-foreground: #f3f7f5;
+  --muted: #1b2822;
+  --muted-foreground: #a7b5ad;
+  --accent: #233a2f;
+  --accent-foreground: #d6eee1;
+  --destructive: #c1443a;
+  --border: #23302a;
+  --input: #23302a;
+  --ring: #1f7a5c;
+  --chart-1: #56b48d;
+  --chart-2: #3b9471;
+  --chart-3: #2b7259;
+  --chart-4: #d5a36c;
+  --chart-5: #9ab5a6;
+  --sidebar: #121d18;
+  --sidebar-foreground: #f3f7f5;
+  --sidebar-primary: #36a77d;
+  --sidebar-primary-foreground: #0e1512;
+  --sidebar-accent: #233a2f;
+  --sidebar-accent-foreground: #d6eee1;
+  --sidebar-border: #23302a;
+  --sidebar-ring: #36a77d;
 }
 
 @layer base {
@@ -138,6 +139,113 @@ These serve as the fallback; there is no separate default.css file. */
   }
   html {
     @apply font-sans;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-feature-settings: inherit;
+  }
+
+  button[data-slot="button"][data-size="default"],
+  button[data-slot="button"][data-size="lg"] {
+    min-height: 2.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+  }
+
+  button[data-slot="button"][data-variant="default"]:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+  }
+}
+
+@layer components {
+  .dashboard-shell [data-slot="card"] {
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--foreground) 4%, transparent);
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .dashboard-shell [data-slot="button"][data-variant="default"] {
+    background-color: var(--primary);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+
+  .dashboard-shell [data-slot="button"][data-variant="outline"] {
+    border-color: var(--border);
+    background-color: var(--card);
+  }
+
+  .dashboard-shell [data-slot="button"][data-variant="outline"]:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .dashboard-shell [data-slot="sidebar-menu-button"][data-active="true"] {
+    background-color: var(--sidebar-accent);
+    color: var(--sidebar-accent-foreground);
+    font-weight: 600;
+  }
+
+  .dashboard-shell [data-slot="input-group"],
+  .dashboard-shell [data-slot="input"],
+  .dashboard-shell [data-slot="textarea"],
+  .dashboard-shell [data-slot="select-trigger"],
+  .dashboard-shell input:not([type="checkbox"]):not([type="radio"]),
+  .dashboard-shell textarea,
+  .dashboard-shell select {
+    border-color: var(--border);
+    background-color: var(--card);
+    border-radius: 0.75rem;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .dashboard-shell [data-slot="input-group"]:focus-within,
+  .dashboard-shell [data-slot="input"]:focus-visible,
+  .dashboard-shell [data-slot="textarea"]:focus-visible,
+  .dashboard-shell [data-slot="select-trigger"]:focus-visible,
+  .dashboard-shell input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+  .dashboard-shell textarea:focus-visible,
+  .dashboard-shell select:focus-visible {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ring) 14%, transparent);
+  }
+
+  .dashboard-shell [data-slot="input"]:hover:not(:disabled),
+  .dashboard-shell [data-slot="textarea"]:hover:not(:disabled),
+  .dashboard-shell [data-slot="select-trigger"]:hover:not(:disabled),
+  .dashboard-shell input:not([type="checkbox"]):not([type="radio"]):hover:not(:disabled),
+  .dashboard-shell textarea:hover:not(:disabled),
+  .dashboard-shell select:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--primary) 32%, var(--border));
+  }
+
+  .dashboard-shell [data-slot="table-head"] {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    font-weight: 600;
+  }
+
+  .dashboard-shell [data-slot="table-row"][data-state="selected"] {
+    background-color: var(--accent);
+  }
+
+  .dashboard-shell [data-slot="sidebar-header"] {
+    border-bottom: 1px solid var(--sidebar-border);
+    padding: 1rem;
+  }
+
+  .dashboard-shell [data-slot="sidebar-group-label"] {
+    color: var(--muted-foreground);
+    font-weight: 600;
   }
 }
 

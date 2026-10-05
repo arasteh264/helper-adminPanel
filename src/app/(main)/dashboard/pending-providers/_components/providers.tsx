@@ -1,13 +1,7 @@
 "use client";
 import * as React from "react";
 
-import {
-  type ColumnFiltersState,
-  type ColumnVisibilityState,
-  type PaginationState,
-  type SortingState,
-  useTable,
-} from "@tanstack/react-table";
+import { type ColumnVisibilityState, type PaginationState, type SortingState, useTable } from "@tanstack/react-table";
 import { Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 
@@ -29,19 +23,33 @@ const EMPTY: ProviderRow[] = [];
 
 export function PendingProviders() {
   const { status } = useSession();
-  const { data, isLoading, isError, refetch } = usePendingProviders();
-  const providers = data ?? EMPTY;
-
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [sorting, setSorting] = React.useState<SortingState>([{ id: "createdAt", desc: true }]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<ColumnVisibilityState>({
-    search: false,
-  });
+  const [search, setSearch] = React.useState("");
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [availabilityFilter, setAvailabilityFilter] = React.useState<"All" | "available" | "unavailable">("All");
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
+  const { data, isLoading, isError, refetch } = usePendingProviders({
+    page: pagination.pageIndex + 1,
+    pageSize: pagination.pageSize,
+    search: searchQuery,
+    availability: availabilityFilter,
+  });
+  const providers = data?.items ?? EMPTY;
+  const resetToFirstPage = () => {
+    setPagination((current) => (current.pageIndex === 0 ? current : { ...current, pageIndex: 0 }));
+  };
+
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [sorting, setSorting] = React.useState<SortingState>([{ id: "createdAt", desc: true }]);
+  const [columnVisibility, setColumnVisibility] = React.useState<ColumnVisibilityState>({
+    search: false,
+  });
+  React.useEffect(() => {
+    const timeoutId = window.setTimeout(() => setSearchQuery(search.trim()), 300);
+    return () => window.clearTimeout(timeoutId);
+  }, [search]);
 
   // سرویس‌دهنده‌ای که برای بررسی مدارک انتخاب شده؛ باز/بسته بودن Dialog از روی همین مشتق می‌شه
   const [selectedProvider, setSelectedProvider] = React.useState<ProviderRow | null>(null);
@@ -55,51 +63,68 @@ export function PendingProviders() {
     state: {
       rowSelection,
       sorting,
-      columnFilters,
       columnVisibility,
       pagination,
     },
+    rowCount: data?.total ?? 0,
+    manualPagination: true,
     getRowId: (row) => row.id,
     autoResetPageIndex: false,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onPaginationChange: setPagination,
   });
 
-  const searchQuery = (table.getColumn("search")?.getFilterValue() as string | undefined) ?? "";
-  const availabilityFilter = (table.getColumn("availability")?.getFilterValue() as string | undefined) ?? "All";
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
-
-  function setColumnSelectFilter(columnId: string, value: string) {
-    table.getColumn(columnId)?.setFilterValue(value === "All" ? undefined : value);
-    table.setPageIndex(0);
-  }
+  const pageHeading = (
+    <header>
+      <h1 className="font-semibold text-2xl">بررسی سرویس‌دهندگان</h1>
+      <p className="mt-1 text-muted-foreground text-sm">درخواست‌های ثبت‌نام و مدارک را بررسی کنید.</p>
+    </header>
+  );
 
   // return زودهنگام فقط بعد از همه‌ی hookها
   if (status === "loading" || isLoading) {
-    return <div className="p-6 text-center text-muted-foreground text-sm">در حال بارگذاری...</div>;
+    return (
+      <div className="flex flex-col gap-4">
+        {pageHeading}
+        <div className="p-6 text-center text-muted-foreground text-sm" role="status">
+          در حال دریافت درخواست‌ها...
+        </div>
+      </div>
+    );
   }
 
   if (status === "unauthenticated") {
-    return <div className="p-6 text-center text-sm">برای مشاهده باید وارد شوید.</div>;
+    return (
+      <div className="flex flex-col gap-4">
+        {pageHeading}
+        <div className="p-6 text-center text-sm" role="alert">
+          برای مشاهده‌ی درخواست‌ها وارد پنل شوید.
+        </div>
+      </div>
+    );
   }
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center gap-3 p-6 text-sm">
-        خطا در دریافت اطلاعات
-        <Button type="button" variant="outline" size="sm" onClick={() => refetch()}>
-          تلاش دوباره
-        </Button>
+      <div className="flex flex-col gap-4">
+        {pageHeading}
+        <div className="flex flex-col items-center gap-3 p-6 text-sm" role="alert">
+          دریافت درخواست‌های سرویس‌دهندگان ناموفق بود.
+          <Button type="button" variant="outline" size="sm" onClick={() => refetch()}>
+            تلاش دوباره
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
+      {pageHeading}
       <Card>
         <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
           <CardTitle className="text-xl leading-none">سرویس‌دهنده‌های در انتظار تأیید</CardTitle>
@@ -112,10 +137,10 @@ export function PendingProviders() {
               <InputGroupInput
                 className="h-7"
                 placeholder="جستجوی نام، ایمیل یا شماره..."
-                value={searchQuery}
+                value={search}
                 onChange={(event) => {
-                  table.getColumn("search")?.setFilterValue(event.target.value || undefined);
-                  table.setPageIndex(0);
+                  setSearch(event.target.value);
+                  resetToFirstPage();
                 }}
               />
               <InputGroupAddon align="inline-end">
@@ -126,7 +151,13 @@ export function PendingProviders() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4 px-0">
           <div className="flex flex-wrap items-center gap-3 px-4">
-            <Select value={availabilityFilter} onValueChange={(value) => setColumnSelectFilter("availability", value)}>
+            <Select
+              value={availabilityFilter}
+              onValueChange={(value) => {
+                setAvailabilityFilter(value as typeof availabilityFilter);
+                resetToFirstPage();
+              }}
+            >
               <SelectTrigger size="sm">
                 <span className="text-muted-foreground">فعالیت:</span>
                 <SelectValue />
@@ -156,6 +187,6 @@ export function PendingProviders() {
           if (!open) setSelectedProvider(null);
         }}
       />
-    </>
+    </div>
   );
 }

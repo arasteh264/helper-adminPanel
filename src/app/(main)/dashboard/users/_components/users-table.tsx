@@ -59,11 +59,7 @@ export function UsersTable({ table }: { table: ReactTable<DataTableFeatures, Use
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="border-border/60 hover:bg-white/2.5"
-                  data-state={table.state.rowSelection[row.id] && "selected"}
-                >
+                <TableRow key={row.id} className="border-border/60 hover:bg-white/2.5">
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="px-3 py-4 align-middle">
                       <table.FlexRender cell={cell} />
@@ -99,7 +95,7 @@ export function UsersTable({ table }: { table: ReactTable<DataTableFeatures, Use
                 <SelectGroup>
                   {[10, 20, 30, 40, 50].map((pageSize) => (
                     <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
+                      {pageSize.toLocaleString("fa-IR")}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -107,7 +103,7 @@ export function UsersTable({ table }: { table: ReactTable<DataTableFeatures, Use
             </Select>
           </div>
           <span>
-            صفحه {currentPage} از {pageCount}
+            صفحه {currentPage.toLocaleString("fa-IR")} از {pageCount.toLocaleString("fa-IR")}
           </span>
         </div>
 
@@ -139,7 +135,7 @@ export function UsersTable({ table }: { table: ReactTable<DataTableFeatures, Use
                     table.setPageIndex(pageNumber - 1);
                   }}
                 >
-                  {pageNumber}
+                  {pageNumber.toLocaleString("fa-IR")}
                 </PaginationLink>
               </PaginationItem>
             ))}

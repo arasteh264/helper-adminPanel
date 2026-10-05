@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
+import { PersianDatePicker } from "../../_components/persian-date-picker";
 import {
   dateBoundary,
   formatDate,
@@ -37,7 +37,7 @@ export function LedgerTab() {
   return (
     <Card>
       <CardHeader className="border-b">
-        <CardTitle>دفترکل Providerها</CardTitle>
+        <CardTitle>دفترکل کیف پول سرویس‌دهندگان</CardTitle>
         <CardDescription>مبالغ مثبت ورودی و مبالغ منفی خروجی به تومان نمایش داده می‌شوند.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-3 px-0">
@@ -81,25 +81,25 @@ export function LedgerTab() {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Input
-            type="date"
-            aria-label="از تاریخ"
+          <PersianDatePicker
+            id="wallet-date-from"
+            label="از تاریخ"
             value={from}
-            onChange={(event) => {
-              setFrom(event.target.value);
+            maxDate={to || undefined}
+            onChange={(value) => {
+              setFrom(value);
               setPage(1);
             }}
-            className="w-40"
           />
-          <Input
-            type="date"
-            aria-label="تا تاریخ"
+          <PersianDatePicker
+            id="wallet-date-to"
+            label="تا تاریخ"
             value={to}
-            onChange={(event) => {
-              setTo(event.target.value);
+            minDate={from || undefined}
+            onChange={(value) => {
+              setTo(value);
               setPage(1);
             }}
-            className="w-40"
           />
         </div>
         <QueryState
@@ -113,7 +113,7 @@ export function LedgerTab() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Provider</TableHead>
+                  <TableHead>سرویس‌دهنده</TableHead>
                   <TableHead>نوع تراکنش</TableHead>
                   <TableHead>مبلغ</TableHead>
                   <TableHead>موجودی پس از تراکنش</TableHead>
@@ -128,7 +128,7 @@ export function LedgerTab() {
                     <TableCell className="font-medium">{row.providerName || "—"}</TableCell>
                     <TableCell>{transactionTypeLabels[row.type]}</TableCell>
                     <TableCell
-                      className={`font-medium tabular-nums ${row.amount < 0 ? "text-destructive" : "text-emerald-700 dark:text-emerald-400"}`}
+                      className={`font-medium tabular-nums ${row.amount < 0 ? "text-destructive" : "text-primary"}`}
                     >
                       {row.amount < 0 ? "− " : "+ "}
                       {formatToman(Math.abs(row.amount))}

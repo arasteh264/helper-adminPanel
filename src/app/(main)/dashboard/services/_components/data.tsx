@@ -58,6 +58,9 @@ export const preferredTimeMeta: Record<PreferredTime, string> = {
 };
 
 export type ServiceRequestFilters = {
+  page: number;
+  pageSize: number;
+  search?: string;
   status?: ServiceRequestStatus;
   customerId?: string;
   preferredTime?: PreferredTime;
@@ -73,6 +76,9 @@ export type ServiceRequestFilters = {
 export function buildServiceRequestsQuery(filters: ServiceRequestFilters) {
   const params = new URLSearchParams();
 
+  params.set("page", String(filters.page));
+  params.set("pageSize", String(filters.pageSize));
+  if (filters.search) params.set("search", filters.search);
   if (filters.status) params.set("status", filters.status);
   if (filters.customerId) params.set("customerId", filters.customerId);
   if (filters.preferredTime) params.set("preferredTime", filters.preferredTime);

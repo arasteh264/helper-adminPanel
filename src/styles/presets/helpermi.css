@@ -1,0 +1,20 @@
+/*
+label: هلپرمی
+value: helpermi
+*/
+
+:root[data-theme-preset="helpermi"] {
+  --primary: #1f7a5c;
+  --primary-hover: #17614a;
+  --ring: #1f7a5c;
+  --sidebar-primary: #1f7a5c;
+  --sidebar-ring: #1f7a5c;
+}
+
+.dark:root[data-theme-preset="helpermi"] {
+  --primary: #1f7a5c;
+  --primary-hover: #2b946e;
+  --ring: #1f7a5c;
+  --sidebar-primary: #36a77d;
+  --sidebar-ring: #36a77d;
+}

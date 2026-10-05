@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { DataTableFeatures } from "@/lib/data-table-features";
 
 import { preferredTimeMeta, type ServiceRequestRow, statusMeta } from "./data";
+import { ResolveDisputeAction } from "./resolve-dispute-action";
 
 const dateFormatter = new Intl.DateTimeFormat("fa-IR", {
   calendar: "persian",
@@ -142,5 +143,12 @@ export const serviceRequestsColumns: ColumnDef<DataTableFeatures, ServiceRequest
       const date = new Date(row.original.createdAt);
       return <div className="text-sm">{Number.isNaN(date.getTime()) ? "—" : dateFormatter.format(date)}</div>;
     },
+  },
+  {
+    id: "actions",
+    header: "اقدامات",
+    enableHiding: false,
+    enableSorting: false,
+    cell: ({ row }) => (row.original.status === "DISPUTED" ? <ResolveDisputeAction request={row.original} /> : null),
   },
 ];
