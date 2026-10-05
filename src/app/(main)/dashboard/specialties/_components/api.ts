@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "@/lib/api-url";
+
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -37,7 +39,7 @@ export async function apiFetch<T>(path: string, token: string, init?: RequestIni
     headers.set("Content-Type", "application/json");
   }
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${path}`, {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers,
   });

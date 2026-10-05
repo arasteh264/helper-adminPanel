@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
-
-const API_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+import { API_BASE_URL } from "@/lib/api-url";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   return forward(await params, "GET");
@@ -15,12 +14,8 @@ async function forward({ id }: { id: string }, method: "GET" | "PATCH", body?: s
   if (!session?.accessToken) {
     return Response.json({ message: "برای مدیریت وبلاگ وارد حساب ادمین شوید." }, { status: 401 });
   }
-  if (!API_URL) {
-    return Response.json({ message: "نشانی API در تنظیمات سرور تعریف نشده است." }, { status: 500 });
-  }
-
   try {
-    const response = await fetch(`${API_URL.replace(/\/$/, "")}/admin/blog/${encodeURIComponent(id)}`, {
+    const response = await fetch(`${API_BASE_URL}/admin/blog/${encodeURIComponent(id)}`, {
       method,
       cache: "no-store",
       headers: {

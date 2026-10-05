@@ -1,18 +1,13 @@
 import { auth } from "@/auth";
-
-const API_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+import { API_BASE_URL } from "@/lib/api-url";
 
 async function forward(request: Request, method: "GET" | "POST") {
   const session = await auth();
   if (!session?.accessToken) {
     return Response.json({ message: "برای مدیریت وبلاگ وارد حساب ادمین شوید." }, { status: 401 });
   }
-  if (!API_URL) {
-    return Response.json({ message: "نشانی API در تنظیمات سرور تعریف نشده است." }, { status: 500 });
-  }
-
   const requestUrl = new URL(request.url);
-  const targetUrl = new URL("/admin/blog", API_URL);
+  const targetUrl = new URL("/admin/blog", API_BASE_URL);
   targetUrl.search = requestUrl.search;
   try {
     const response = await fetch(targetUrl, {

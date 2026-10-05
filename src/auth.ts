@@ -2,6 +2,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
+import { API_BASE_URL } from "@/lib/api-url";
+
 function decodeJwtPayload(token: string): { userId?: string; role?: string; exp?: number } {
   const payload = token.split(".")[1];
   return JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
@@ -13,7 +15,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     Credentials({
       async authorize(credentials) {
         try {
-          const res = await fetch(`${process.env.API_URL}/auth/login`, {
+          const res = await fetch(`${API_BASE_URL}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
