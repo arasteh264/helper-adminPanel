@@ -1,5 +1,6 @@
 import type { UserRole, UserRow, UserStatus } from "@/app/(main)/dashboard/users/_components/data";
 import { auth } from "@/auth";
+import { API_BASE_URL } from "@/lib/api-url";
 
 type ApiUser = {
   id: string;
@@ -22,11 +23,6 @@ export async function GET(request: Request) {
     return Response.json({ message: "برای دریافت کاربران وارد حساب ادمین شوید." }, { status: 401 });
   }
 
-  const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) {
-    return Response.json({ message: "نشانی API در تنظیمات سرور تعریف نشده است." }, { status: 500 });
-  }
-
   const requested = new URL(request.url).searchParams;
   const page = Number(requested.get("page") ?? "1");
   const pageSize = Number(requested.get("pageSize") ?? "10");
@@ -43,7 +39,7 @@ export async function GET(request: Request) {
     pageSize: String(pageSize),
     ...(search ? { search } : {}),
   });
-  const response = await fetch(`${apiUrl.replace(/\/$/, "")}/users?${params}`, {
+  const response = await fetch(`${API_BASE_URL}/users?${params}`, {
     cache: "no-store",
     headers: {
       Authorization: `Bearer ${session.accessToken}`,

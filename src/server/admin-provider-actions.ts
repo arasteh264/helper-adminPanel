@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { auth } from "@/auth";
+import { API_BASE_URL } from "@/lib/api-url";
 
 type ActionResult = { ok: true } | { ok: false; message: string };
 
@@ -16,19 +17,15 @@ async function updateProviderVerification(
     return { ok: false, message: "برای این عملیات وارد حساب ادمین شوید." };
   }
 
-  const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3005";
-  const response = await fetch(
-    `${apiUrl.replace(/\/$/, "")}/admin/providers/${encodeURIComponent(providerId)}/review`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.accessToken}`,
-      },
-      body: JSON.stringify({ status, note }),
-      cache: "no-store",
+  const response = await fetch(`${API_BASE_URL}/admin/providers/${encodeURIComponent(providerId)}/review`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.accessToken}`,
     },
-  );
+    body: JSON.stringify({ status, note }),
+    cache: "no-store",
+  });
 
   if (!response.ok) {
     const body = (await response.json().catch(() => null)) as { message?: string | string[] } | null;
