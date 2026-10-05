@@ -17,8 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { DataTableFeatures } from "@/lib/data-table-features";
+import { approveProvider, rejectProvider } from "@/server/admin-provider-actions";
 
-import { approveProvider, rejectProvider } from "./actions";
 import { availabilityMeta, type ProviderRow } from "./data";
 
 const dateFormatter = new Intl.DateTimeFormat("fa-IR", {
@@ -43,11 +43,11 @@ function AvailabilityBadge({ available }: { available: boolean }) {
 function ProviderActions({ provider }: { provider: ProviderRow }) {
   const [pending, startTransition] = useTransition();
 
-  function run(action: () => Promise<{ ok: boolean }>, success: string) {
+  function run(action: () => Promise<{ ok: boolean; message?: string }>, success: string) {
     startTransition(async () => {
       const result = await action();
       if (result.ok) toast.success(success);
-      else toast.error("عملیات ناموفق بود");
+      else toast.error(result.message ?? "عملیات ناموفق بود");
     });
   }
 

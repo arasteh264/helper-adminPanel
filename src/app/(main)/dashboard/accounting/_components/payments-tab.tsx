@@ -71,10 +71,10 @@ export function PaymentsTab() {
                 <TableRow>
                   <TableHead>مبلغ</TableHead>
                   <TableHead>وضعیت</TableHead>
-                  <TableHead>شناسه‌ی درخواست</TableHead>
+                  <TableHead>درخواست سرویس</TableHead>
                   <TableHead>مشتری</TableHead>
-                  <TableHead>Provider</TableHead>
-                  <TableHead>referenceId</TableHead>
+                  <TableHead>سرویس‌دهنده</TableHead>
+                  <TableHead>شناسه‌ی پیگیری پرداخت</TableHead>
                   <TableHead>زمان پرداخت</TableHead>
                 </TableRow>
               </TableHeader>

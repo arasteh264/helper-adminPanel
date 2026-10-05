@@ -1,146 +1,94 @@
-# Next.js Admin Template with TypeScript & Shadcn UI
+# پنل مدیریت هلپرمی
 
-**Studio Admin** - Includes multiple dashboards, authentication layouts, customizable theme presets, and more.
+پنل فارسی و راست‌چین مدیریت هلپرمی برای رسیدگی به کاربران، سرویس‌دهندگان، درخواست‌های سرویس، گفت‌وگوها، تخصص‌ها و امور مالی.
 
-<img src="https://github.com/arhamkhnz/next-shadcn-admin-dashboard/blob/main/media/dashboard.png?version=5" alt="Dashboard Screenshot">
-
-Most admin templates I found, free or paid, felt cluttered, outdated, or too rigid. I built this as a cleaner alternative with features often missing in others, such as theme toggling and layout controls, while keeping the design modern, minimal, and flexible.
-
-> **View demo:** [studio admin](https://studio-admin.arhamkhnz.com)
-
-> [!NOTE]
-> Looking for the Base UI version? Check out [next-shadcn-admin-dashboard-baseui](https://github.com/arhamkhnz/next-shadcn-admin-dashboard-baseui).
->
-> Looking for the React Aria version? Check out [arhamkhnz/next-shadcn-admin-dashboard-aria](https://github.com/arhamkhnz/next-shadcn-admin-dashboard-aria).
->
-> Looking for the TanStack Start version? Check out [tanstack-shadcn-admin-dashboard](https://github.com/arhamkhnz/tanstack-shadcn-admin-dashboard).
-
-> [!TIP]
-> I’m also working on Nuxt.js and Svelte versions of this dashboard. They’ll be live soon.
+ورود به پنل فقط برای حساب‌های مدیر مجاز است. صفحه‌ی اصلی پس از ورود، شاخص‌های واقعی درخواست‌های بررسی سرویس‌دهندگان و برداشت‌ها را از API دریافت می‌کند.
 
 ## Features
 
-- Built with Next.js 16, TypeScript, Tailwind CSS v4, and Shadcn UI  
-- Responsive and mobile-friendly  
-- Customizable theme presets (light/dark modes with color schemes like Tangerine, Brutalist, and more)  
-- Flexible layouts (collapsible sidebar, variable content widths)  
-- Authentication flows and screens  
-- Prebuilt dashboards (Default, CRM, Finance, Analytics, Productivity) plus legacy variants  
-- Role-Based Access Control (RBAC) with config-driven UI and multi-tenant support *(planned)*  
-
-> [!NOTE]
-> The default dashboard uses the **shadcn neutral** theme.  
-> It also includes additional color presets inspired by [Tweakcn](https://tweakcn.com):  
->
-> - Tangerine  
-> - Neo Brutalism  
-> - Soft Pop  
->
-> You can create more presets by following the same structure as the existing ones.
-
-> Looking for the **Next.js 15** version?  
-> Check out the [`archive/next15`](https://github.com/arhamkhnz/next-shadcn-admin-dashboard/tree/archive/next15) branch.  
-> This branch contains the setup prior to upgrading to Next 16 and the React Compiler.
-
-> Looking for the **Next.js 14 + Tailwind CSS v3** version?  
-> Check out the [`archive/next14-tailwindv3`](https://github.com/arhamkhnz/next-shadcn-admin-dashboard/tree/archive/next14-tailwindv3) branch.  
-> It has a different color theme and is not actively maintained, but I try to keep it updated with major changes.  
+- فارسی، راست‌چین و واکنش‌گرا؛ تاریخ‌ها و اعداد با قالب فارسی نمایش داده می‌شوند.
+- احراز هویت مدیر با NextAuth و توکن API.
+- نمای کلی با داده‌ی واقعی حسابداری و درخواست‌های در انتظار بررسی.
+- صفحه‌بندی و جستجوی سمت سرور در فهرست کاربران.
+- مدیریت بررسی سرویس‌دهندگان و مدارک، درخواست‌های سرویس، گفت‌وگوها، تخصص‌ها و حسابداری.
+- پوسته‌ی قابل تنظیم، حالت روشن/تیره و نوار کناری جمع‌شونده.
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router), TypeScript, Tailwind CSS v4  
-- **UI Components**: Shadcn UI  
-- **Validation**: Zod  
-- **Forms & State Management**: React Hook Form, Zustand  
-- **Tables & Data Handling**: TanStack Table  
-- **Tooling & DX**: Biome, Husky  
+- **Framework**: Next.js 16 (App Router), TypeScript, Tailwind CSS v4
+- **UI Components**: Shadcn UI
+- **Validation**: Zod
+- **Forms & State Management**: React Hook Form, Zustand
+- **Tables & Data Handling**: TanStack Table
+- **Tooling & DX**: Biome, Husky
 
-## Screens
+## بخش‌های مدیریتی
 
-### Available
-- Default Dashboard  
-- CRM Dashboard  
-- Finance Dashboard  
-- Analytics Dashboard  
-- Productivity Dashboard  
-- E-commerce Dashboard  
-- Academy Dashboard  
-- Logistics Dashboard  
-- Infrastructure Dashboard  
-- File Manager  
-- Patient Monitoring  
-- Chat Page  
-- Email Page  
-- Profile  
-- Users Management  
-- Roles Management  
-- Kanban Board  
-- Tasks Page  
-- Invoice Page  
-- Calendar Page  
-- Authentication (4 screens)  
-- Legacy: Default v1, CRM v1, Finance v1, Analytics v1
+- نمای کلی عملیات
+- کاربران
+- بررسی سرویس‌دهندگان و مدارک
+- درخواست‌های سرویس
+- مدیریت گفت‌وگوها
+- گروه‌ها و تخصص‌ها
+- امور مالی: گزارش مالی، پرداخت‌های مشتریان، درخواست‌های برداشت، گردش کیف پول و تنظیم کمیسیون
 
-### Planned
-I’ve added all the planned screens. Feel free to open an issue for requesting something specific.
+## اتصال به API
+
+هر دو متغیر زیر باید به نشانی پایه‌ی `helper-api` اشاره کنند:
+
+```env
+API_URL=http://localhost:3005
+NEXT_PUBLIC_API_URL=http://localhost:3005
+```
+
+`API_URL` برای درخواست‌های سروری و ورود استفاده می‌شود؛ `NEXT_PUBLIC_API_URL` برای صفحه‌های مدیریتی که مستقیماً از مرورگر API را فراخوانی می‌کنند. مقدارها را متناسب با محیط استقرار تنظیم کنید و اطلاعات محرمانه را در متغیرهای `NEXT_PUBLIC_*` قرار ندهید.
+
+### مواردی که به تکمیل API نیاز دارند
+
+- فهرست کاربران در API فعلی گارد مدیر ندارد و موجودیت خام، شامل اطلاعات حساس احراز هویت و بازیابی حساب را برمی‌گرداند. مسیر پنل فقط فیلدهای لازم را عبور می‌دهد، اما این محافظت جایگزین اصلاح `helper-api` نیست؛ endpoint اصلی باید فوراً گارد مدیر و DTO امن داشته باشد.
+- API فعلی برای تغییر نقش، وضعیت، تعلیق یا فعال‌سازی کاربران endpoint مدیریتی ندارد.
+- نقش‌ها enum ثابت هستند و API مدیریت نقش ندارد؛ به همین دلیل صفحه‌ی نمایشی نقش‌ها در پنل نگه‌داری نمی‌شود.
+- API مدیریت سرویس‌دهندگان برای تأیید اولیه و مدارک است؛ فهرست و مدیریت عمومی سرویس‌دهندگان تأییدشده هنوز کامل نیست.
 
 ## Colocation File System Architecture
 
-This project follows a **colocation-based architecture** each feature keeps its own pages, components, and logic inside its route folder.  
-Shared UI, hooks, and configuration live at the top level, making the codebase modular, scalable, and easier to maintain as the app grows.
-
-For a full breakdown of the structure with examples, see the [Next Colocation Template](https://github.com/arhamkhnz/next-colocation-template).
+ساختار پروژه بر پایه‌ی هم‌مکانی است: اجزای هر بخش کنار مسیر همان بخش قرار دارند و اجزای مشترک در پوشه‌های اصلی `src/components`، `src/hooks` و `src/lib` نگه‌داری می‌شوند.
 
 ## Getting Started
 
-You can run this project locally, or deploy it instantly with Vercel.
-
-### Deploy with Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Farhamkhnz%2Fnext-shadcn-admin-dashboard)
-
-_Deploy your own copy with one click._
-
-### Run locally
+### اجرای محلی
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/arhamkhnz/next-shadcn-admin-dashboard.git
-   ```
-   
-2. **Navigate into the project**
-   ```bash
-    cd next-shadcn-admin-dashboard
-   ```
-   
-3. **Install dependencies**
-   ```bash
-    npm install
+   git clone https://github.com/arasteh264/helper-adminPanel.git
    ```
 
-4. **Start the development server**
+2. **Navigate into the project**
+   ```bash
+   cd helper-adminPanel
+   ```
+
+3. **تنظیم نشانی API** در فایل `.env.local`
+   ```env
+   API_URL=http://localhost:3005
+   NEXT_PUBLIC_API_URL=http://localhost:3005
+   ```
+
+4. **نصب وابستگی‌ها**
+   ```bash
+   npm install
+   ```
+
+5. **اجرای پنل**
    ```bash
    npm run dev
    ```
 
-Your app will be running at [http://localhost:3000](http://localhost:3000)
+پنل در [http://localhost:3000](http://localhost:3000) در دسترس است و ورود آن به یک حساب مدیر معتبر در `helper-api` نیاز دارد.
 
-### Formatting and Linting
+### بررسی کد
 
-Format, lint, and organize imports
 ```bash
-npx @biomejs/biome check --write
+npm run lint
+npm run check
 ```
-> For more information on available rules, fixes, and CLI options, refer to the [Biome documentation](https://biomejs.dev/).
-
----
-
-> [!IMPORTANT]  
-> This project is updated frequently. If you’re working from a fork or an older clone, pull the latest changes before syncing. Some updates may include breaking changes.
-
----
-
-Contributions are welcome. Feel free to open issues, feature requests, or start a discussion.
-
-
-**Happy Vibe Coding!**

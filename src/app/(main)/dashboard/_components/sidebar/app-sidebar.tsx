@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { Command } from "lucide-react";
+import { HeartHandshake } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 
 import {
@@ -36,10 +36,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link prefetch={false} href="/dashboard/default">
-                <Command />
-                <span className="font-semibold text-base">{APP_CONFIG.name}</span>
+            <SidebarMenuButton asChild size="lg" className="h-auto gap-3 rounded-xl py-2.5">
+              <Link prefetch={false} href="/dashboard/default" className="h-auto">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground shadow-sm">
+                  <HeartHandshake className="size-5" />
+                </span>
+                <span className="flex flex-col items-start gap-0.5">
+                  <span className="font-bold text-sm">{APP_CONFIG.name}</span>
+                  <span className="text-sidebar-foreground/65 text-xs">سامانه‌ی مدیریت خدمات</span>
+                </span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

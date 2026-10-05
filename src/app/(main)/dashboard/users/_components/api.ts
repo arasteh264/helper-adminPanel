@@ -1,8 +1,4 @@
-import { format } from "date-fns";
-
 import type { UserRole, UserRow, UserStatus } from "./data";
-
-const API_URL = process.env.API_URL ?? "http://localhost:3005";
 
 type ApiUser = {
   id: string;
@@ -12,7 +8,6 @@ type ApiUser = {
   _role: UserRole;
   _status: UserStatus;
   createdAt: string;
-  _updatedAt: string;
 };
 
 type ApiUsersResponse = {
@@ -27,20 +22,34 @@ function mapUser(user: ApiUser): UserRow {
     email: user._email,
     phone: user._phone,
     role: user._role,
-    // team: "-",
-    // workspace: [],
     status: user._status,
-    joinedDate: format(new Date(user.createdAt), "dd MMM yyyy, h:mm a"),
-    // lastActive: Math.floor((Date.now() - new Date(user._updatedAt).getTime()) / 60000),
+    joinedDate: user.createdAt,
   };
 }
 
-export async function getUsers(): Promise<UserRow[]> {
-  const res = await fetch(`${API_URL}/users`, { cache: "no-store" });
+export async function getUsers({
+  page,
+  pageSize,
+  search,
+}: {
+  page: number;
+  pageSize: number;
+  search: string;
+}): Promise<{ items: UserRow[]; total: number }> {
+  const params = new URLSearchParams({
+    page: String(page),
+    pageSize: String(pageSize),
+    ...(search ? { search } : {}),
+  });
+  const response = await fetch(`/api/admin/users?${params}`, {
+    cache: "no-store",
+  });
 
-  if (!res.ok) throw new Error("خطا در دریافت کاربران");
+  if (!response.ok) {
+    const error = (await response.json()) as { message?: string };
+    throw new Error(error.message ?? `دریافت کاربران ناموفق بود (${response.status})`);
+  }
 
-  const data: ApiUsersResponse = await res.json();
-
-  return data.items.map(mapUser);
+  const data: ApiUsersResponse = await response.json();
+  return { items: data.items.map(mapUser), total: data.total };
 }

@@ -42,16 +42,16 @@ const payoutStatusTones = {
 export function PayoutsTab() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  const [status, setStatus] = useState<PayoutStatus>("PENDING");
+  const [status, setStatus] = useState<PayoutStatus | "ALL">("PENDING");
   const [review, setReview] = useState<ReviewDialogState>(null);
-  const query = usePayoutRequests({ page, pageSize, status });
+  const query = usePayoutRequests({ page, pageSize, status: status === "ALL" ? undefined : status });
   const mutation = useReviewPayout();
   let confirmationText = "";
   if (review) {
     confirmationText =
       review.decision === "PAID"
-        ? `ثبت می‌کنید که مبلغ ${formatToman(review.payout.amount)} به حساب Provider واریز شده است؟ UI انتقال بانکی انجام نمی‌دهد.`
-        : `با رد درخواست، مبلغ ${formatToman(review.payout.amount)} طبق منطق backend به wallet Provider بازمی‌گردد.`;
+        ? `آیا مبلغ ${formatToman(review.payout.amount)} را به حساب سرویس‌دهنده واریز کرده‌اید؟ ثبت این عملیات فقط نتیجه را در پنل ثبت می‌کند و انتقال بانکی انجام نمی‌دهد.`
+        : `با رد درخواست، مبلغ ${formatToman(review.payout.amount)} طبق منطق سامانه به کیف پول سرویس‌دهنده بازمی‌گردد.`;
   }
   let confirmationLabel = "تأیید رد";
   if (review?.decision === "PAID") confirmationLabel = "تأیید و ثبت";
@@ -73,7 +73,7 @@ export function PayoutsTab() {
         ...(review.decision === "PAID" ? { referenceCode } : { rejectReason }),
       });
       toast.success(
-        review.decision === "PAID" ? "واریز برداشت ثبت شد" : "درخواست برداشت رد و مبلغ به wallet برگشت داده شد",
+        review.decision === "PAID" ? "نتیجه‌ی واریز برداشت ثبت شد" : "درخواست برداشت رد شد و مبلغ به کیف پول بازگشت",
       );
       setReview(null);
     } catch (error) {
@@ -84,15 +84,15 @@ export function PayoutsTab() {
   return (
     <Card>
       <CardHeader className="border-b">
-        <CardTitle>درخواست‌های برداشت Provider</CardTitle>
-        <CardDescription>اطلاعات بانکی snapshot شده هنگام ثبت درخواست نمایش داده می‌شود.</CardDescription>
+        <CardTitle>درخواست‌های برداشت سرویس‌دهندگان</CardTitle>
+        <CardDescription>مقصد بانکی مطابق اطلاعات ثبت‌شده در زمان درخواست نمایش داده می‌شود.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-3 px-0">
         <div className="px-4">
           <Select
             value={status}
             onValueChange={(value) => {
-              setStatus(value as PayoutStatus);
+              setStatus(value as PayoutStatus | "ALL");
               setPage(1);
             }}
           >
@@ -101,6 +101,7 @@ export function PayoutsTab() {
             </SelectTrigger>
             <SelectContent position="popper" align="start">
               <SelectGroup>
+                <SelectItem value="ALL">همه‌ی وضعیت‌ها</SelectItem>
                 {payoutStatuses.map((value) => (
                   <SelectItem key={value} value={value}>
                     {payoutStatusLabels[value]}
@@ -121,7 +122,7 @@ export function PayoutsTab() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Provider</TableHead>
+                  <TableHead>سرویس‌دهنده</TableHead>
                   <TableHead>مبلغ</TableHead>
                   <TableHead>مقصد بانکی ثبت‌شده</TableHead>
                   <TableHead>وضعیت</TableHead>

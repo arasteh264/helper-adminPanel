@@ -52,6 +52,45 @@ import {
 } from "./use-specialties";
 
 const MAX_ICON_SIZE = 2 * 1024 * 1024;
+const LIST_PAGE_SIZE = 10;
+
+function ListPagination({
+  label,
+  page,
+  total,
+  onPageChange,
+}: {
+  label: string;
+  page: number;
+  total: number;
+  onPageChange: (page: number) => void;
+}) {
+  const pageCount = Math.max(1, Math.ceil(total / LIST_PAGE_SIZE));
+  if (total <= LIST_PAGE_SIZE) return null;
+
+  return (
+    <div className="flex items-center justify-between gap-2 border-t pt-3 text-xs">
+      <span className="text-muted-foreground">
+        صفحه‌ی {page.toLocaleString("fa-IR")} از {pageCount.toLocaleString("fa-IR")} · {label}:{" "}
+        {total.toLocaleString("fa-IR")}
+      </span>
+      <div className="flex gap-1">
+        <Button type="button" variant="outline" size="sm" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+          قبلی
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={page >= pageCount}
+          onClick={() => onPageChange(page + 1)}
+        >
+          بعدی
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 function getErrorMessage(error: unknown, fallback: string): string {
   return error instanceof ApiError ? error.message : fallback;
@@ -94,17 +133,20 @@ function IconField({
 
   return (
     <div className="grid gap-2">
-      <Label htmlFor="specialty-icon">آیکون</Label>
+      <Label htmlFor="specialty-icon">تصویر دسته یا خدمت</Label>
       {icon ? (
-        <Attachment className="w-full">
-          <AttachmentMedia variant="image">
-            <Image src={icon} alt="آیکون فعلی" width={40} height={40} unoptimized />
-          </AttachmentMedia>
-          <AttachmentContent>
-            <AttachmentTitle>آیکون فعلی</AttachmentTitle>
-            <AttachmentDescription>در صورت انتخاب فایل جدید جایگزین می‌شود</AttachmentDescription>
-          </AttachmentContent>
-        </Attachment>
+        <div className="grid gap-2">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-xl border bg-muted">
+            <Image
+              src={icon}
+              alt="تصویر فعلی خدمت"
+              fill
+              sizes="(max-width: 640px) 100vw, 32rem"
+              className="object-cover"
+            />
+          </div>
+          <p className="text-muted-foreground text-xs">با انتخاب عکس جدید جایگزین می‌شود.</p>
+        </div>
       ) : null}
       {file ? (
         <Attachment className="w-full">
@@ -127,7 +169,9 @@ function IconField({
         </Attachment>
       ) : null}
       <Input key={file?.name ?? "empty"} id="specialty-icon" type="file" accept="image/*" onChange={selectFile} />
-      <p className="text-muted-foreground text-xs">حداکثر حجم: ۲ مگابایت</p>
+      <p className="text-muted-foreground text-xs">
+        عکس واقعی و افقی با نسبت ۱۶:۹ بهتر دیده می‌شود · حداکثر حجم: ۲ مگابایت
+      </p>
     </div>
   );
 }
@@ -413,6 +457,8 @@ export function SpecialtyManagement() {
   const groupsQuery = useSpecialtyGroups();
   const groups = groupsQuery.data ?? [];
   const [selectedGroupId, setSelectedGroupId] = useState("");
+  const [groupsPage, setGroupsPage] = useState(1);
+  const [specialtiesPage, setSpecialtiesPage] = useState(1);
   const [groupDialog, setGroupDialog] = useState<{
     group?: SpecialtyGroup;
   } | null>(null);
@@ -431,8 +477,27 @@ export function SpecialtyManagement() {
     }
   }, [groups, selectedGroupId]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Reset pagination when the selected group changes.
+  useEffect(() => {
+    setSpecialtiesPage(1);
+  }, [selectedGroupId]);
+
   const selectedGroup = groups.find((group) => group.id === selectedGroupId);
   const specialties = specialtiesQuery.data ?? [];
+  const groupPageCount = Math.max(1, Math.ceil(groups.length / LIST_PAGE_SIZE));
+  const specialtyPageCount = Math.max(1, Math.ceil(specialties.length / LIST_PAGE_SIZE));
+  const visibleGroups = groups.slice((groupsPage - 1) * LIST_PAGE_SIZE, groupsPage * LIST_PAGE_SIZE);
+  const visibleSpecialties = specialties.slice(
+    (specialtiesPage - 1) * LIST_PAGE_SIZE,
+    specialtiesPage * LIST_PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    if (groupsPage > groupPageCount) setGroupsPage(groupPageCount);
+  }, [groupPageCount, groupsPage]);
+  useEffect(() => {
+    if (specialtiesPage > specialtyPageCount) setSpecialtiesPage(specialtyPageCount);
+  }, [specialtiesPage, specialtyPageCount]);
 
   function removeGroup(group: SpecialtyGroup) {
     return deleteGroup
@@ -475,7 +540,7 @@ export function SpecialtyManagement() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="grid gap-1">
           <h1 className="font-semibold text-2xl">گروه‌های تخصص و تخصص‌ها</h1>
-          <p className="text-muted-foreground text-sm">مدیریت نام، آیکون، ترتیب و وضعیت انتشار</p>
+          <p className="text-muted-foreground text-sm">مدیریت نام، تصویر، ترتیب و وضعیت انتشار</p>
         </div>
         <Button onClick={() => setGroupDialog({})}>
           <Plus /> گروه تخصص
@@ -496,11 +561,25 @@ export function SpecialtyManagement() {
             </CardHeader>
             <CardContent className="grid gap-1">
               {groups.length ? (
-                groups.map((group) => (
+                visibleGroups.map((group) => (
                   <div
                     key={group.id}
                     className={`flex items-center gap-1 rounded-md border p-2 ${selectedGroupId === group.id ? "border-primary/40 bg-muted/60" : "border-transparent"}`}
                   >
+                    {group.icon ? (
+                      <Image
+                        src={group.icon}
+                        alt=""
+                        width={64}
+                        height={44}
+                        unoptimized
+                        className="h-11 w-16 shrink-0 rounded-md object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-11 w-16 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                        <FileImage className="size-5" />
+                      </span>
+                    )}
                     <button
                       type="button"
                       className="min-w-0 flex-1 text-start"
@@ -533,6 +612,7 @@ export function SpecialtyManagement() {
               ) : (
                 <p className="py-5 text-center text-muted-foreground text-sm">گروهی ثبت نشده است.</p>
               )}
+              <ListPagination label="گروه" page={groupsPage} total={groups.length} onPageChange={setGroupsPage} />
             </CardContent>
           </Card>
 
@@ -560,8 +640,22 @@ export function SpecialtyManagement() {
                   <span className="sr-only">در حال دریافت تخصص‌ها</span>
                 </div>
               ) : specialties.length ? (
-                specialties.map((specialty) => (
+                visibleSpecialties.map((specialty) => (
                   <div key={specialty.id} className="flex flex-wrap items-center gap-2 border-b py-2 last:border-b-0">
+                    {specialty.icon ? (
+                      <Image
+                        src={specialty.icon}
+                        alt=""
+                        width={64}
+                        height={44}
+                        unoptimized
+                        className="h-11 w-16 shrink-0 rounded-md object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-11 w-16 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                        <FileImage className="size-5" />
+                      </span>
+                    )}
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-medium">{specialty.name}</span>
@@ -592,6 +686,12 @@ export function SpecialtyManagement() {
               ) : selectedGroup ? (
                 <p className="py-5 text-center text-muted-foreground text-sm">تخصصی در این گروه ثبت نشده است.</p>
               ) : null}
+              <ListPagination
+                label="تخصص"
+                page={specialtiesPage}
+                total={specialties.length}
+                onPageChange={setSpecialtiesPage}
+              />
             </CardContent>
           </Card>
         </div>

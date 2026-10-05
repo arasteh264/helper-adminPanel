@@ -43,4 +43,7 @@ export type ChatConversationPage = {
 export type ChatMessagesResult = {
   conversation: Pick<ChatConversation, "id" | "status" | "pausedReason">;
   messages: ChatMessage[];
+  page: number;
+  pageSize: number;
+  total: number;
 };

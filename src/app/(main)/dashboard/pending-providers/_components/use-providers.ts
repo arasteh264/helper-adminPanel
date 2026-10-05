@@ -1,38 +1,47 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
 import { apiFetch } from "./api";
 import type { ProviderRow } from "./data";
 
-const KEY = ["providers", "pending"] as const;
+type PendingProviderFilters = {
+  page: number;
+  pageSize: number;
+  search: string;
+  availability: "All" | "available" | "unavailable";
+};
 
-export function usePendingProviders() {
+export function usePendingProviders(
+  filters: PendingProviderFilters = {
+    page: 1,
+    pageSize: 1,
+    search: "",
+    availability: "All",
+  },
+) {
   const { data: session, status } = useSession();
   const token = session?.accessToken;
+  const params = new URLSearchParams({
+    page: String(filters.page),
+    pageSize: String(filters.pageSize),
+  });
+  if (filters.search) params.set("search", filters.search);
+  if (filters.availability !== "All") {
+    params.set("available", String(filters.availability === "available"));
+  }
 
   return useQuery({
-    queryKey: KEY,
+    queryKey: ["providers", "pending", filters] as const,
     enabled: !!token,
     queryFn: async () => {
-      const json = await apiFetch<ProviderRow[] | { data: ProviderRow[] }>("/admin/providers/pending", token as string);
-      return Array.isArray(json) ? json : json.data;
+      const json = await apiFetch<{ items: ProviderRow[]; total: number }>(
+        `/admin/providers/pending?${params}`,
+        token as string,
+      );
+      return json;
     },
     meta: { sessionStatus: status },
-  });
-}
-
-export function useVerifyProvider() {
-  const { data: session } = useSession();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, status, note }: { id: string; status: "APPROVED" | "REJECTED"; note?: string }) =>
-      apiFetch(`/admin/providers/${id}/verification`, session?.accessToken as string, {
-        method: "PATCH",
-        body: JSON.stringify({ status, note }),
-      }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
   });
 }

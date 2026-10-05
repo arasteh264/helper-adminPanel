@@ -35,6 +35,7 @@ import type {
 
 const CONVERSATIONS_KEY = ["admin-chat-conversations"] as const;
 const MESSAGES_KEY = ["admin-chat-messages"] as const;
+const MESSAGE_PAGE_SIZE = 20;
 const statusLabels: Record<ConversationStatus, string> = {
   ACTIVE: "فعال",
   PAUSED: "متوقف",
@@ -89,6 +90,7 @@ export function ConversationManagement() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [messagesPage, setMessagesPage] = useState(1);
   const [statusIntent, setStatusIntent] = useState<ConversationStatus | null>(null);
   const [pausedReason, setPausedReason] = useState("");
   const [moderationIntent, setModerationIntent] = useState<{
@@ -123,11 +125,24 @@ export function ConversationManagement() {
     setSelectedId(conversations[0]?.id ?? null);
   }, [conversations, selectedId]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Reset paging when the selected conversation changes.
+  useEffect(() => {
+    setMessagesPage(1);
+  }, [selectedId]);
+
   const messagesQuery = useQuery({
-    queryKey: [...MESSAGES_KEY, selectedId],
+    queryKey: [...MESSAGES_KEY, selectedId, messagesPage, MESSAGE_PAGE_SIZE],
     enabled: !!token && !!selectedId,
-    queryFn: () =>
-      apiFetch<ChatMessagesResult>(`/admin/chats/${encodeURIComponent(selectedId as string)}`, token as string),
+    queryFn: () => {
+      const params = new URLSearchParams({
+        page: String(messagesPage),
+        pageSize: String(MESSAGE_PAGE_SIZE),
+      });
+      return apiFetch<ChatMessagesResult>(
+        `/admin/chats/${encodeURIComponent(selectedId as string)}?${params}`,
+        token as string,
+      );
+    },
   });
 
   const refreshRelated = async (conversationId: string) => {
@@ -197,6 +212,15 @@ export function ConversationManagement() {
     onError: (error) => toast.error(errorMessage(error, "تغییر وضعیت نمایش پیام ناموفق بود")),
   });
 
+  const messages = messagesQuery.data?.messages ?? [];
+  const pageCount = Math.max(1, Math.ceil((conversationQuery.data?.total ?? 0) / pageSize));
+  const messageTotal = messagesQuery.data?.total ?? 0;
+  const messagePageCount = Math.max(1, Math.ceil(messageTotal / MESSAGE_PAGE_SIZE));
+
+  useEffect(() => {
+    if (messagesQuery.data && messagesPage > messagePageCount) setMessagesPage(messagePageCount);
+  }, [messagePageCount, messagesPage, messagesQuery.data]);
+
   if (sessionStatus === "loading") {
     return (
       <div className="flex min-h-48 items-center justify-center gap-2 text-muted-foreground text-sm">
@@ -207,9 +231,6 @@ export function ConversationManagement() {
   if (sessionStatus === "unauthenticated") {
     return <div className="p-6 text-center text-sm">برای مشاهده گفتگوها وارد پنل ادمین شوید.</div>;
   }
-
-  const messages = messagesQuery.data?.messages ?? [];
-  const pageCount = Math.max(1, Math.ceil((conversationQuery.data?.total ?? 0) / pageSize));
 
   return (
     <div className="grid gap-4">
@@ -447,58 +468,92 @@ export function ConversationManagement() {
                   </div>
                 )}
                 {!messagesQuery.isPending && !messagesQuery.isError && messages.length > 0 && (
-                  <ol className="flex max-h-[65vh] flex-col gap-3 overflow-y-auto p-4">
-                    {messages.map((message) => (
-                      <li
-                        key={message.id}
-                        className={`min-w-0 rounded-md border p-3 ${message.status === "HIDDEN" ? "border-destructive/40 bg-destructive/5" : "bg-background"}`}
-                      >
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex min-w-0 items-center gap-2">
-                            <span className="truncate font-medium text-sm">{message.sender.name}</span>
-                            <Badge variant="outline">{message.sender.role === "ADMIN" ? "ادمین" : "طرف گفتگو"}</Badge>
-                            <Badge variant={message.status === "VISIBLE" ? "secondary" : "destructive"}>
-                              {message.status === "VISIBLE" ? "قابل مشاهده" : "مخفی"}
-                            </Badge>
+                  <div>
+                    <ol className="flex max-h-[65vh] flex-col gap-3 overflow-y-auto p-4">
+                      {messages.map((message) => (
+                        <li
+                          key={message.id}
+                          className={`min-w-0 rounded-md border p-3 ${message.status === "HIDDEN" ? "border-destructive/40 bg-destructive/5" : "bg-background"}`}
+                        >
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex min-w-0 items-center gap-2">
+                              <span className="truncate font-medium text-sm">{message.sender.name}</span>
+                              <Badge variant="outline">{message.sender.role === "ADMIN" ? "ادمین" : "طرف گفتگو"}</Badge>
+                              <Badge variant={message.status === "VISIBLE" ? "secondary" : "destructive"}>
+                                {message.status === "VISIBLE" ? "قابل مشاهده" : "مخفی"}
+                              </Badge>
+                            </div>
+                            <time className="text-muted-foreground text-xs" dateTime={message.createdAt}>
+                              {formatDate(message.createdAt)}
+                            </time>
                           </div>
-                          <time className="text-muted-foreground text-xs" dateTime={message.createdAt}>
-                            {formatDate(message.createdAt)}
-                          </time>
-                        </div>
-                        <p className="wrap-break-word mt-3 whitespace-pre-wrap text-sm leading-7">{message.body}</p>
-                        {message.moderationNote && (
-                          <p className="mt-2 border-t pt-2 text-muted-foreground text-xs">
-                            یادداشت مدیریت: {message.moderationNote}
-                          </p>
-                        )}
-                        <div className="mt-3 flex justify-end">
+                          <p className="wrap-break-word mt-3 whitespace-pre-wrap text-sm leading-7">{message.body}</p>
+                          {message.moderationNote && (
+                            <p className="mt-2 border-t pt-2 text-muted-foreground text-xs">
+                              یادداشت مدیریت: {message.moderationNote}
+                            </p>
+                          )}
+                          <div className="mt-3 flex justify-end">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              disabled={moderateMessage.isPending}
+                              onClick={() => {
+                                setModerationIntent({
+                                  message,
+                                  status: message.status === "VISIBLE" ? "HIDDEN" : "VISIBLE",
+                                });
+                                setModerationNote("");
+                              }}
+                            >
+                              {message.status === "VISIBLE" ? (
+                                <>
+                                  <EyeOff /> مخفی‌کردن پیام
+                                </>
+                              ) : (
+                                <>
+                                  <Eye /> بازگرداندن نمایش
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                    {messageTotal > MESSAGE_PAGE_SIZE && (
+                      <div className="flex items-center justify-between gap-3 border-t px-4 py-3 text-xs">
+                        <span className="text-muted-foreground" aria-live="polite">
+                          نمایش {((messagesPage - 1) * MESSAGE_PAGE_SIZE + 1).toLocaleString("fa-IR")} تا{" "}
+                          {Math.min(messagesPage * MESSAGE_PAGE_SIZE, messageTotal).toLocaleString("fa-IR")} از{" "}
+                          {messageTotal.toLocaleString("fa-IR")} پیام
+                        </span>
+                        <div className="flex gap-2">
                           <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
-                            disabled={moderateMessage.isPending}
-                            onClick={() => {
-                              setModerationIntent({
-                                message,
-                                status: message.status === "VISIBLE" ? "HIDDEN" : "VISIBLE",
-                              });
-                              setModerationNote("");
-                            }}
+                            disabled={messagesPage <= 1 || messagesQuery.isFetching}
+                            onClick={() => setMessagesPage((current) => current - 1)}
                           >
-                            {message.status === "VISIBLE" ? (
-                              <>
-                                <EyeOff /> مخفی‌کردن پیام
-                              </>
-                            ) : (
-                              <>
-                                <Eye /> بازگرداندن نمایش
-                              </>
-                            )}
+                            قبلی
+                          </Button>
+                          <span className="self-center text-muted-foreground">
+                            {messagesPage.toLocaleString("fa-IR")} / {messagePageCount.toLocaleString("fa-IR")}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            disabled={messagesPage >= messagePageCount || messagesQuery.isFetching}
+                            onClick={() => setMessagesPage((current) => current + 1)}
+                          >
+                            بعدی
                           </Button>
                         </div>
-                      </li>
-                    ))}
-                  </ol>
+                      </div>
+                    )}
+                  </div>
                 )}
               </CardContent>
             </>

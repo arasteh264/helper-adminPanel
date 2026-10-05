@@ -10,11 +10,11 @@ type ServiceRequestsResponse =
   | { data: ServiceRequestRow[] }
   | { items: ServiceRequestRow[]; total: number };
 
-function extractRows(json: ServiceRequestsResponse): ServiceRequestRow[] {
-  if (Array.isArray(json)) return json;
-  if ("items" in json) return json.items;
-  if ("data" in json) return json.data;
-  return [];
+function extractPage(json: ServiceRequestsResponse) {
+  if (Array.isArray(json)) return { rows: json, total: json.length };
+  if ("items" in json) return { rows: json.items, total: json.total };
+  if ("data" in json) return { rows: json.data, total: json.data.length };
+  return { rows: [], total: 0 };
 }
 
 export function useServiceRequests(filters: ServiceRequestFilters) {
@@ -27,7 +27,7 @@ export function useServiceRequests(filters: ServiceRequestFilters) {
     enabled: !!token,
     queryFn: async () => {
       const json = await apiFetch<ServiceRequestsResponse>(`/admin/service-requests?${query}`, token as string);
-      return extractRows(json);
+      return extractPage(json);
     },
     meta: { sessionStatus: status },
   });
