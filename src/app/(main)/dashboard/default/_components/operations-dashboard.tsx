@@ -104,7 +104,7 @@ export function OperationsDashboard() {
         <Button asChild className="rounded-lg shadow-sm">
           <Link href="/dashboard/pending-providers">
             <BriefcaseBusiness />
-            بررسی سرویس‌دهندگان
+            مدیریت سرویس‌دهندگان
           </Link>
         </Button>
       </header>

@@ -32,7 +32,14 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant={variant} collapsible={collapsible} />
+      <AppSidebar
+        variant={variant}
+        collapsible={collapsible}
+        user={{
+          name: session.user?.name ?? "مدیر",
+          email: session.user?.email ?? "حساب مدیر",
+        }}
+      />
       <SidebarInset
         className={cn(
           "[html[data-content-layout=centered]_&>*]:mx-auto",
