@@ -20,12 +20,18 @@ import { usePendingProviders } from "./use-providers";
 
 // بیرون از کامپوننت، تا در هر رندر آرایه‌ی جدید ساخته نشه
 const EMPTY: ProviderRow[] = [];
+const verificationStatuses = {
+  PENDING: "در انتظار تأیید",
+  APPROVED: "تأییدشده",
+  REJECTED: "ردشده",
+} as const;
 
 export function PendingProviders() {
   const { status } = useSession();
   const [search, setSearch] = React.useState("");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [availabilityFilter, setAvailabilityFilter] = React.useState<"All" | "available" | "unavailable">("All");
+  const [verificationFilter, setVerificationFilter] = React.useState<"ALL" | keyof typeof verificationStatuses>("ALL");
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -35,6 +41,7 @@ export function PendingProviders() {
     pageSize: pagination.pageSize,
     search: searchQuery,
     availability: availabilityFilter,
+    ...(verificationFilter === "ALL" ? {} : { status: verificationFilter }),
   });
   const providers = data?.items ?? EMPTY;
   const resetToFirstPage = () => {
@@ -80,8 +87,8 @@ export function PendingProviders() {
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
   const pageHeading = (
     <header>
-      <h1 className="font-semibold text-2xl">بررسی سرویس‌دهندگان</h1>
-      <p className="mt-1 text-muted-foreground text-sm">درخواست‌های ثبت‌نام و مدارک را بررسی کنید.</p>
+      <h1 className="font-semibold text-2xl">مدیریت سرویس‌دهندگان</h1>
+      <p className="mt-1 text-muted-foreground text-sm">درخواست‌ها و وضعیت تأیید سرویس‌دهندگان را بررسی کنید.</p>
     </header>
   );
 
@@ -127,8 +134,12 @@ export function PendingProviders() {
       {pageHeading}
       <Card>
         <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
-          <CardTitle className="text-xl leading-none">سرویس‌دهنده‌های در انتظار تأیید</CardTitle>
-          <CardDescription className="max-w-sm leading-snug">بررسی و تأیید درخواست‌های ثبت‌نام</CardDescription>
+          <CardTitle className="text-xl leading-none">
+            سرویس‌دهندگان {verificationFilter === "ALL" ? "در همه‌ی وضعیت‌ها" : verificationStatuses[verificationFilter]}
+          </CardTitle>
+          <CardDescription className="max-w-sm leading-snug">
+            {data?.total.toLocaleString("fa-IR") ?? "—"} مورد · فهرست و بررسی وضعیت ثبت‌نام
+          </CardDescription>
           <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
             <InputGroup className="h-7 w-full md:w-64">
               <InputGroupAddon align="inline-start">
@@ -151,6 +162,26 @@ export function PendingProviders() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4 px-0">
           <div className="flex flex-wrap items-center gap-3 px-4">
+            <Select
+              value={verificationFilter}
+              onValueChange={(value) => {
+                setVerificationFilter(value as typeof verificationFilter);
+                resetToFirstPage();
+              }}
+            >
+              <SelectTrigger size="sm" aria-label="فیلتر وضعیت تأیید">
+                <span className="text-muted-foreground">وضعیت تأیید:</span>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper" align="start">
+                <SelectGroup>
+                  <SelectItem value="PENDING">در انتظار تأیید</SelectItem>
+                  <SelectItem value="APPROVED">تأییدشده</SelectItem>
+                  <SelectItem value="REJECTED">ردشده</SelectItem>
+                  <SelectItem value="ALL">همه‌ی وضعیت‌ها</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             <Select
               value={availabilityFilter}
               onValueChange={(value) => {

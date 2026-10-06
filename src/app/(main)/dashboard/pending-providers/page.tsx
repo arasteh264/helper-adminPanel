@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { PendingProviders } from "./_components/providers";
 
 export const metadata: Metadata = {
-  title: "سرویس‌دهنده‌های در انتظار تأیید",
+  title: "مدیریت سرویس‌دهندگان",
 };
 
 export default function Page() {

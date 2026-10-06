@@ -1,31 +1,9 @@
-import type { UserRole, UserRow, UserStatus } from "./data";
-
-type ApiUser = {
-  id: string;
-  _name: string;
-  _email: string;
-  _phone: string;
-  _role: UserRole;
-  _status: UserStatus;
-  createdAt: string;
-};
+import type { UserRow } from "./data";
 
 type ApiUsersResponse = {
-  items: ApiUser[];
+  items: UserRow[];
   total: number;
 };
-
-function mapUser(user: ApiUser): UserRow {
-  return {
-    id: user.id,
-    name: user._name,
-    email: user._email,
-    phone: user._phone,
-    role: user._role,
-    status: user._status,
-    joinedDate: user.createdAt,
-  };
-}
 
 export async function getUsers({
   page,
@@ -51,5 +29,5 @@ export async function getUsers({
   }
 
   const data: ApiUsersResponse = await response.json();
-  return { items: data.items.map(mapUser), total: data.total };
+  return data;
 }

@@ -4,11 +4,11 @@ import { API_BASE_URL } from "@/lib/api-url";
 
 type ApiUser = {
   id: string;
-  _name: string;
-  _email: string;
-  _phone: string;
-  _role: UserRole;
-  _status: UserStatus;
+  name: string;
+  email: string;
+  phone: string;
+  role: UserRole;
+  status: UserStatus;
   createdAt: string;
 };
 
@@ -53,11 +53,11 @@ export async function GET(request: Request) {
   const data: ApiUsersResponse = await response.json();
   const items: UserRow[] = data.items.map((user) => ({
     id: user.id,
-    name: user._name,
-    email: user._email,
-    phone: user._phone,
-    role: user._role,
-    status: user._status,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role,
+    status: user.status,
     joinedDate: user.createdAt,
   }));
 

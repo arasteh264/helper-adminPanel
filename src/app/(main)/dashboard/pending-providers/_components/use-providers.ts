@@ -11,6 +11,7 @@ type PendingProviderFilters = {
   pageSize: number;
   search: string;
   availability: "All" | "available" | "unavailable";
+  status?: "PENDING" | "APPROVED" | "REJECTED";
 };
 
 export function usePendingProviders(
@@ -31,6 +32,7 @@ export function usePendingProviders(
   if (filters.availability !== "All") {
     params.set("available", String(filters.availability === "available"));
   }
+  if (filters.status) params.set("status", filters.status);
 
   return useQuery({
     queryKey: ["providers", "pending", filters] as const,

@@ -1,6 +1,7 @@
 "use client";
 import { useTransition } from "react";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { type ColumnDef, Subscribe } from "@tanstack/react-table";
 import { Check, MoreHorizontal, X } from "lucide-react";
 import { toast } from "sonner";
@@ -42,47 +43,63 @@ function AvailabilityBadge({ available }: { available: boolean }) {
 
 function ProviderActions({ provider }: { provider: ProviderRow }) {
   const [pending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
+
+  if (provider.verificationStatus !== "PENDING") {
+    return (
+      <Badge variant={provider.verificationStatus === "APPROVED" ? "default" : "destructive"}>
+        {provider.verificationStatus === "APPROVED" ? "تأییدشده" : "ردشده"}
+      </Badge>
+    );
+  }
 
   function run(action: () => Promise<{ ok: boolean; message?: string }>, success: string) {
     startTransition(async () => {
       const result = await action();
-      if (result.ok) toast.success(success);
-      else toast.error(result.message ?? "عملیات ناموفق بود");
+      if (result.ok) {
+        toast.success(success);
+        await queryClient.invalidateQueries({ queryKey: ["providers", "pending"] });
+      } else {
+        toast.error(result.message ?? "عملیات ناموفق بود");
+      }
     });
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          aria-label={`عملیات ${provider.user.name}`}
-          className="size-8 text-muted-foreground"
-          size="icon-sm"
-          variant="ghost"
-          disabled={pending}
-        >
-          <MoreHorizontal className="size-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onSelect={() => run(() => approveProvider(provider.id), "سرویس‌دهنده تأیید شد")}>
-          <Check /> تأیید
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          variant="destructive"
-          onSelect={() => {
-            // TODO: به‌جای prompt از یک Dialog با فیلد دلیل رد استفاده کن
-            const note = window.prompt("دلیل رد درخواست؟");
-            if (note) {
-              run(() => rejectProvider(provider.id, note), "درخواست رد شد");
-            }
-          }}
-        >
-          <X /> رد درخواست
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex items-center gap-2">
+      <Badge variant="outline">در انتظار</Badge>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            aria-label={`عملیات ${provider.user.name}`}
+            className="size-8 text-muted-foreground"
+            size="icon-sm"
+            variant="ghost"
+            disabled={pending}
+          >
+            <MoreHorizontal className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onSelect={() => run(() => approveProvider(provider.id), "سرویس‌دهنده تأیید شد")}>
+            <Check /> تأیید
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            variant="destructive"
+            onSelect={() => {
+              // TODO: به‌جای prompt از یک Dialog با فیلد دلیل رد استفاده کن
+              const note = window.prompt("دلیل رد درخواست؟");
+              if (note) {
+                run(() => rejectProvider(provider.id, note), "درخواست رد شد");
+              }
+            }}
+          >
+            <X /> رد درخواست
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 }
 

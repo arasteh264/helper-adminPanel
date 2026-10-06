@@ -76,7 +76,7 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         id: "pending-providers",
-        title: "بررسی سرویس‌دهندگان",
+        title: "سرویس‌دهندگان",
         url: "/dashboard/pending-providers",
         icon: Users,
       },

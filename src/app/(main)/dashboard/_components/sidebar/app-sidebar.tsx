@@ -8,6 +8,7 @@ import { useShallow } from "zustand/react/shallow";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -18,8 +19,14 @@ import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
 import { NavMain } from "./nav-main";
+import { NavUser } from "./nav-user";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  user: { name: string; email: string };
+}) {
   const { sidebarVariant, sidebarCollapsible, isSynced } = usePreferencesStore(
     useShallow((s) => ({
       sidebarVariant: s.values.sidebar_variant,
@@ -53,10 +60,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={sidebarItems} />
       </SidebarContent>
-      {/* <SidebarFooter>
-        <SupportCard />
-        <NavUser user={rootUser} />
-      </SidebarFooter> */}
+      <SidebarFooter className="border-sidebar-border border-t">
+        <NavUser user={user} />
+      </SidebarFooter>
     </Sidebar>
   );
 }
