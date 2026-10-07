@@ -33,6 +33,7 @@ export function usePendingProviders(
     params.set("available", String(filters.availability === "available"));
   }
   if (filters.status) params.set("status", filters.status);
+  if (filters.status) params.set("status", filters.status);
 
   return useQuery({
     queryKey: ["providers", "pending", filters] as const,

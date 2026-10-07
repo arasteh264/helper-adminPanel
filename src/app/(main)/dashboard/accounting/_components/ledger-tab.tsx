@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LoaderCircle, RefreshCw } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -38,7 +41,22 @@ export function LedgerTab() {
     <Card>
       <CardHeader className="border-b">
         <CardTitle>دفترکل کیف پول سرویس‌دهندگان</CardTitle>
-        <CardDescription>مبالغ مثبت ورودی و مبالغ منفی خروجی به تومان نمایش داده می‌شوند.</CardDescription>
+        <CardDescription>
+          مبالغ مثبت ورودی و مبالغ منفی خروجی به تومان نمایش داده می‌شوند؛ اطلاعات هر ۱۵ ثانیه تازه می‌شود.
+        </CardDescription>
+        <CardAction>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            aria-label="به‌روزرسانی گردش کیف پول"
+            disabled={query.isFetching}
+            onClick={() => void query.refetch()}
+          >
+            {query.isFetching ? <LoaderCircle className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}
+            <span className="sr-only">به‌روزرسانی</span>
+          </Button>
+        </CardAction>
       </CardHeader>
       <CardContent className="grid gap-3 px-0">
         <div className="flex flex-wrap items-end gap-2 px-4">

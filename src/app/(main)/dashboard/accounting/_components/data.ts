@@ -108,5 +108,7 @@ export function formatDate(value: string | null): string {
 
 export function dateBoundary(value: string, end = false): string | undefined {
   if (!value) return undefined;
-  return new Date(`${value}T${end ? "23:59:59.999" : "00:00:00.000"}Z`).toISOString();
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return undefined;
+  return new Date(year, month - 1, day, end ? 23 : 0, end ? 59 : 0, end ? 59 : 0, end ? 999 : 0).toISOString();
 }

@@ -40,12 +40,11 @@ function getPersianParts(date: Date): PersianDateParts {
 
 function getPersianMonthStart(date: Date) {
   const target = getPersianParts(date);
-  const firstOfGregorianMonth = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 12));
-  for (let offset = -3; offset <= 3; offset += 1) {
-    const candidate = new Date(firstOfGregorianMonth);
-    candidate.setUTCDate(candidate.getUTCDate() + offset);
+  const candidate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12));
+  for (let offset = 0; offset <= 31; offset += 1) {
     const parts = getPersianParts(candidate);
     if (parts.year === target.year && parts.month === target.month && parts.day === 1) return candidate;
+    candidate.setUTCDate(candidate.getUTCDate() - 1);
   }
   throw new Error("آغاز ماه شمسی قابل محاسبه نیست.");
 }

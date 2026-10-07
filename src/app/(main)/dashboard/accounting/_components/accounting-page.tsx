@@ -24,6 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { CommissionTrend } from "./commission-trend";
 import { formatToman } from "./data";
 import { LedgerTab } from "./ledger-tab";
 import { PaymentsTab } from "./payments-tab";
@@ -88,6 +89,7 @@ function AccountingOverview() {
 
   return (
     <div className="grid gap-4">
+      <CommissionTrend />
       <section className="grid gap-3" aria-labelledby="payment-metrics-title">
         <div>
           <h2 id="payment-metrics-title" className="font-semibold text-base">
