@@ -16,6 +16,7 @@ export type ServiceRequestRow = {
   id: string;
   customerId: string;
   customer?: { name: string; email: string; phone: string } | null;
+  specialty?: { name: string } | null;
   title: string;
   description: string;
   status: ServiceRequestStatus;
@@ -26,6 +27,7 @@ export type ServiceRequestRow = {
   scheduledAt: string | null;
   skillIds: string[];
   skills?: { id: string; name: string }[];
+  images?: { url: string; createdAt: string }[];
   createdAt: string;
   updatedAt: string;
 };

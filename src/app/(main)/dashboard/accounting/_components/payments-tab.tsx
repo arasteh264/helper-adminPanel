@@ -74,7 +74,6 @@ export function PaymentsTab() {
                   <TableHead>درخواست سرویس</TableHead>
                   <TableHead>مشتری</TableHead>
                   <TableHead>سرویس‌دهنده</TableHead>
-                  <TableHead>شناسه‌ی پیگیری پرداخت</TableHead>
                   <TableHead>زمان پرداخت</TableHead>
                 </TableRow>
               </TableHeader>
@@ -86,23 +85,17 @@ export function PaymentsTab() {
                       <Badge variant={paymentStatusTone[row.status]}>{paymentStatusLabels[row.status]}</Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="grid gap-1">
-                        <span dir="ltr" className="text-xs">
-                          {row.serviceRequestId}
-                        </span>
-                        <span className="text-muted-foreground text-xs">{row.requestTitle}</span>
-                      </div>
+                      <span>{row.requestTitle}</span>
                     </TableCell>
                     <TableCell>
                       <div className="grid gap-1">
                         <span>{row.customerName || "—"}</span>
                         <span className="text-muted-foreground text-xs" dir="ltr">
-                          {row.customerPhone || row.customerId}
+                          {row.customerPhone || "شماره تماس ثبت نشده"}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell>{row.providerName || "—"}</TableCell>
-                    <TableCell dir="ltr">{row.referenceId || "—"}</TableCell>
                     <TableCell>{formatDate(row.paidAt)}</TableCell>
                   </TableRow>
                 ))}

@@ -1,9 +1,12 @@
 // dashboard/service-requests/_components/service-requests-columns.tsx
 "use client";
+import Link from "next/link";
+
 import type { ColumnDef } from "@tanstack/react-table";
 import { Subscribe } from "@tanstack/react-table";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { DataTableFeatures } from "@/lib/data-table-features";
 
@@ -116,19 +119,17 @@ export const serviceRequestsColumns: ColumnDef<DataTableFeatures, ServiceRequest
   },
   {
     id: "customerId",
-    accessorFn: (row) => row.customer?.name ?? row.customerId,
+    accessorFn: (row) => row.customer?.name ?? "مشتری نامشخص",
     header: "مشتری",
     cell: ({ row }) => {
-      const { customer, customerId } = row.original;
+      const { customer } = row.original;
       return customer ? (
         <div className="flex flex-col">
           <span className="text-sm">{customer.name}</span>
           <span className="text-muted-foreground text-xs">{customer.email}</span>
         </div>
       ) : (
-        <span className="text-muted-foreground text-xs" dir="ltr">
-          {customerId.slice(0, 8)}…
-        </span>
+        <span className="text-muted-foreground text-xs">اطلاعات مشتری در دسترس نیست</span>
       );
     },
   },
@@ -149,6 +150,13 @@ export const serviceRequestsColumns: ColumnDef<DataTableFeatures, ServiceRequest
     header: "اقدامات",
     enableHiding: false,
     enableSorting: false,
-    cell: ({ row }) => (row.original.status === "DISPUTED" ? <ResolveDisputeAction request={row.original} /> : null),
+    cell: ({ row }) => (
+      <div className="flex flex-wrap gap-2">
+        <Button asChild variant="outline" size="sm">
+          <Link href={`/dashboard/services/${encodeURIComponent(row.original.id)}`}>جزئیات</Link>
+        </Button>
+        {row.original.status === "DISPUTED" ? <ResolveDisputeAction request={row.original} /> : null}
+      </div>
+    ),
   },
 ];
