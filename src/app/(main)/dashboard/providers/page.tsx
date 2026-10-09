@@ -1,5 +1,11 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+
+import { PendingProviders } from "../pending-providers/_components/providers";
+
+export const metadata: Metadata = {
+  title: "فهرست متخصصان",
+};
 
 export default function Page() {
-  redirect("/dashboard/pending-providers");
+  return <PendingProviders verificationStatus="APPROVED" />;
 }

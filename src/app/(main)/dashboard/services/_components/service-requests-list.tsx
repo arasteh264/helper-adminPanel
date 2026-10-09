@@ -2,10 +2,13 @@
 "use client";
 import * as React from "react";
 
+import Link from "next/link";
+
 import { type ColumnVisibilityState, type PaginationState, type SortingState, useTable } from "@tanstack/react-table";
 import { Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 
+import { AdminExportButton } from "@/app/(main)/dashboard/_components/admin-export-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,17 +17,46 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { dataTableFeatures } from "@/lib/data-table-features";
 
 import { PersianDatePicker } from "../../_components/persian-date-picker";
-import { type ServiceRequestFilters, type ServiceRequestRow, toEndOfDayIso, toStartOfDayIso } from "./data";
+import {
+  type ServiceRequestFilters,
+  type ServiceRequestRow,
+  type ServiceRequestStatus,
+  toEndOfDayIso,
+  toStartOfDayIso,
+} from "./data";
+import { ServiceRequestReviewSettings } from "./service-request-review-settings";
 import { serviceRequestsColumns } from "./service-requests-columns";
 import { ServiceRequestsTable } from "./service-requests-table";
 import { useServiceRequests } from "./use-service-requests";
 
 const EMPTY: ServiceRequestRow[] = [];
 
-export function ServiceRequestsList() {
+function getPageContent(initialStatus?: ServiceRequestStatus) {
+  switch (initialStatus) {
+    case "PENDING_ADMIN_REVIEW":
+      return {
+        title: "درخواست‌های در انتظار بررسی مدیر",
+        description: "درخواست‌هایی که برای تصمیم‌گیری مدیر در صف هستند.",
+      };
+    case "DISPUTED":
+      return {
+        title: "درخواست‌های اختلاف‌دار",
+        description: "درخواست‌هایی که اختلاف آن‌ها نیازمند رسیدگی مدیر است.",
+      };
+    default:
+      return {
+        title: "همه‌ی درخواست‌های سرویس",
+        description: "درخواست‌های سرویس را جستجو و بر اساس وضعیت پالایش کنید.",
+      };
+  }
+}
+
+export function ServiceRequestsList({ initialStatus }: { initialStatus?: ServiceRequestStatus }) {
   const { status: sessionStatus } = useSession();
 
-  const [statusFilter, setStatusFilter] = React.useState<ServiceRequestFilters["status"] | "All">("All");
+  const [statusFilter, setStatusFilter] = React.useState<ServiceRequestFilters["status"] | "All">(
+    initialStatus ?? "All",
+  );
   const [preferredTimeFilter, setPreferredTimeFilter] = React.useState<ServiceRequestFilters["preferredTime"] | "All">(
     "All",
   );
@@ -104,13 +136,14 @@ export function ServiceRequestsList() {
   });
 
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
+  const { title: pageTitle, description: pageDescription } = getPageContent(initialStatus);
 
   if (sessionStatus === "loading" || isLoading) {
     return (
       <div className="flex flex-col gap-4">
         <header>
-          <h1 className="font-semibold text-2xl">درخواست‌های سرویس</h1>
-          <p className="mt-1 text-muted-foreground text-sm">درخواست‌های ثبت‌شده را جستجو و بر اساس وضعیت پالایش کنید.</p>
+          <h1 className="font-semibold text-2xl">{pageTitle}</h1>
+          <p className="mt-1 text-muted-foreground text-sm">{pageDescription}</p>
         </header>
         <div className="p-6 text-center text-muted-foreground text-sm" role="status">
           در حال دریافت درخواست‌ها...
@@ -122,8 +155,8 @@ export function ServiceRequestsList() {
     return (
       <div className="flex flex-col gap-4">
         <header>
-          <h1 className="font-semibold text-2xl">درخواست‌های سرویس</h1>
-          <p className="mt-1 text-muted-foreground text-sm">درخواست‌های ثبت‌شده را جستجو و بر اساس وضعیت پالایش کنید.</p>
+          <h1 className="font-semibold text-2xl">{pageTitle}</h1>
+          <p className="mt-1 text-muted-foreground text-sm">{pageDescription}</p>
         </header>
         <div className="p-6 text-center text-sm" role="alert">
           برای مشاهده‌ی درخواست‌ها وارد پنل شوید.
@@ -135,8 +168,8 @@ export function ServiceRequestsList() {
     return (
       <div className="flex flex-col gap-4">
         <header>
-          <h1 className="font-semibold text-2xl">درخواست‌های سرویس</h1>
-          <p className="mt-1 text-muted-foreground text-sm">درخواست‌های ثبت‌شده را جستجو و بر اساس وضعیت پالایش کنید.</p>
+          <h1 className="font-semibold text-2xl">{pageTitle}</h1>
+          <p className="mt-1 text-muted-foreground text-sm">{pageDescription}</p>
         </header>
         <div className="flex flex-col items-center gap-3 p-6 text-sm" role="alert">
           دریافت درخواست‌های سرویس ناموفق بود.
@@ -151,14 +184,31 @@ export function ServiceRequestsList() {
   return (
     <div className="flex flex-col gap-4">
       <header>
-        <h1 className="font-semibold text-2xl">درخواست‌های سرویس</h1>
-        <p className="mt-1 text-muted-foreground text-sm">درخواست‌های ثبت‌شده را جستجو و بر اساس وضعیت پالایش کنید.</p>
+        <h1 className="font-semibold text-2xl">{pageTitle}</h1>
+        <p className="mt-1 text-muted-foreground text-sm">{pageDescription}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button asChild size="sm" variant={initialStatus === "PENDING_ADMIN_REVIEW" ? "default" : "outline"}>
+            <Link href="/dashboard/services/review">در انتظار بررسی مدیر</Link>
+          </Button>
+          <Button asChild size="sm" variant={initialStatus === "DISPUTED" ? "default" : "outline"}>
+            <Link href="/dashboard/services/disputes">اختلاف‌ها</Link>
+          </Button>
+          <Button asChild size="sm" variant={!initialStatus ? "default" : "outline"}>
+            <Link href="/dashboard/services">همه‌ی درخواست‌ها</Link>
+          </Button>
+        </div>
       </header>
       <Card>
         <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
           <CardTitle className="text-xl leading-none">فهرست درخواست‌ها</CardTitle>
           <CardDescription className="max-w-sm leading-snug">مدیریت و فیلتر درخواست‌های ثبت‌شده</CardDescription>
+          {!initialStatus ? (
+            <div className="col-span-full">
+              <ServiceRequestReviewSettings />
+            </div>
+          ) : null}
           <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
+            {!initialStatus ? <AdminExportButton dataset="service-requests" label="خروجی درخواست‌ها" /> : null}
             <InputGroup className="h-7 w-full md:w-64">
               <InputGroupAddon align="inline-start">
                 <Search className="size-3.5" />
@@ -178,32 +228,35 @@ export function ServiceRequestsList() {
 
         <CardContent className="flex flex-col gap-4 px-0">
           <div className="flex flex-wrap items-end gap-3 px-4">
-            <Select
-              value={statusFilter}
-              onValueChange={(v) => {
-                setStatusFilter(v as typeof statusFilter);
-                resetToFirstPage();
-              }}
-            >
-              <SelectTrigger size="sm">
-                <span className="text-muted-foreground">وضعیت:</span>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper" align="start">
-                <SelectGroup>
-                  <SelectItem value="All">همه</SelectItem>
-                  <SelectItem value="OPEN">باز</SelectItem>
-                  <SelectItem value="OFFER_ACCEPTED">پیشنهاد پذیرفته‌شده</SelectItem>
-                  <SelectItem value="CUSTOMER_CONFIRMATION_PENDING">در انتظار تأیید مشتری</SelectItem>
-                  <SelectItem value="IN_PROGRESS">در حال انجام</SelectItem>
-                  <SelectItem value="AWAITING_CUSTOMER_CONFIRMATION">در انتظار تأیید نهایی</SelectItem>
-                  <SelectItem value="COMPLETED">انجام‌شده</SelectItem>
-                  <SelectItem value="CANCELLED">لغوشده</SelectItem>
-                  <SelectItem value="EXPIRED">منقضی‌شده</SelectItem>
-                  <SelectItem value="DISPUTED">مناقشه‌دار</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            {!initialStatus ? (
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => {
+                  setStatusFilter(v as typeof statusFilter);
+                  resetToFirstPage();
+                }}
+              >
+                <SelectTrigger size="sm">
+                  <span className="text-muted-foreground">وضعیت:</span>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent position="popper" align="start">
+                  <SelectGroup>
+                    <SelectItem value="All">همه</SelectItem>
+                    <SelectItem value="PENDING_ADMIN_REVIEW">در انتظار بررسی مدیر</SelectItem>
+                    <SelectItem value="OPEN">باز</SelectItem>
+                    <SelectItem value="OFFER_ACCEPTED">پیشنهاد پذیرفته‌شده</SelectItem>
+                    <SelectItem value="CUSTOMER_CONFIRMATION_PENDING">در انتظار تأیید مشتری</SelectItem>
+                    <SelectItem value="IN_PROGRESS">در حال انجام</SelectItem>
+                    <SelectItem value="AWAITING_CUSTOMER_CONFIRMATION">در انتظار تأیید نهایی</SelectItem>
+                    <SelectItem value="COMPLETED">انجام‌شده</SelectItem>
+                    <SelectItem value="CANCELLED">لغوشده</SelectItem>
+                    <SelectItem value="EXPIRED">منقضی‌شده</SelectItem>
+                    <SelectItem value="DISPUTED">مناقشه‌دار</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            ) : null}
 
             <Select
               value={preferredTimeFilter}
@@ -220,7 +273,6 @@ export function ServiceRequestsList() {
                 <SelectGroup>
                   <SelectItem value="All">همه</SelectItem>
                   <SelectItem value="URGENT">فوری</SelectItem>
-                  <SelectItem value="THIS_WEEK">همین هفته</SelectItem>
                   <SelectItem value="FLEXIBLE">منعطف</SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -276,7 +328,7 @@ export function ServiceRequestsList() {
               size="sm"
               onClick={() => {
                 resetToFirstPage();
-                setStatusFilter("All");
+                setStatusFilter(initialStatus ?? "All");
                 setPreferredTimeFilter("All");
                 setBudgetFrom("");
                 setBudgetTo("");

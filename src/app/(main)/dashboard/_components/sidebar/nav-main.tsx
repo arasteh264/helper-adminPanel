@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "cn";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
@@ -263,7 +263,7 @@ function NavCollapsibleItem({ item, isActive, defaultOpen, isSubItemActive }: Na
           <SidebarMenuButton tooltip={item.title} isActive={isActive} disabled={item.disabled}>
             {Icon && <Icon />}
             <span>{item.title}</span>
-            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+            <ChevronLeft className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:-rotate-90" />
           </SidebarMenuButton>
         </CollapsibleTrigger>
         <NavItemBadge badge={item.badge} />

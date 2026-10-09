@@ -187,6 +187,7 @@ function CommissionSettings() {
   const retryConfiguration = () => configQuery.refetch();
   const updateCommission = useUpdateCommission();
   const [rate, setRate] = useState("");
+  const [reason, setReason] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
@@ -225,8 +226,12 @@ function CommissionSettings() {
 
   async function confirmCommission() {
     try {
-      const updated = await updateCommission.mutateAsync(parsedRate);
+      const updated = await updateCommission.mutateAsync({
+        commissionRate: parsedRate,
+        reason: reason.trim(),
+      });
       setRate(String(updated.commissionRate));
+      setReason("");
       setConfirmOpen(false);
       toast.success("نرخ کمیسیون پلتفرم به‌روزرسانی شد");
     } catch (error) {
@@ -257,11 +262,27 @@ function CommissionSettings() {
               className="w-full sm:w-48"
             />
           </div>
+          <div className="grid gap-2">
+            <Label htmlFor="commission-reason">دلیل تغییر</Label>
+            <Input
+              id="commission-reason"
+              value={reason}
+              maxLength={500}
+              onChange={(event) => setReason(event.target.value)}
+              placeholder="دلیل مدیریتی این تغییر را بنویسید"
+              className="w-full sm:w-72"
+            />
+          </div>
           <Badge variant="outline" className="min-h-9">
             حداقل مبلغ برداشت: {formatToman(configuration.minWithdrawal)}
           </Badge>
           <Button
-            disabled={!isRateValid || parsedRate === configuration.commissionRate || updateCommission.isPending}
+            disabled={
+              !isRateValid ||
+              parsedRate === configuration.commissionRate ||
+              reason.trim().length < 3 ||
+              updateCommission.isPending
+            }
             onClick={() => setConfirmOpen(true)}
           >
             ثبت نرخ جدید

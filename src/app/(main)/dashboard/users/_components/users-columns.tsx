@@ -1,6 +1,7 @@
 "use client";
 import type { ColumnDef } from "@tanstack/react-table";
 
+import { AccountStatusAction } from "@/app/(main)/dashboard/_components/account-status-action";
 import { Badge } from "@/components/ui/badge";
 import type { DataTableFeatures } from "@/lib/data-table-features";
 
@@ -71,5 +72,20 @@ export const usersColumns: ColumnDef<DataTableFeatures, UserRow>[] = [
     accessorFn: (row) => new Date(row.joinedDate).getTime(),
     header: "تاریخ عضویت",
     cell: ({ row }) => <div className="text-foreground text-sm">{formatJalaliDate(row.original.joinedDate)}</div>,
+  },
+  {
+    id: "actions",
+    header: "عملیات",
+    enableSorting: false,
+    enableHiding: false,
+    cell: ({ row }) =>
+      row.original.role === "ADMIN" ? null : (
+        <AccountStatusAction
+          targetType="user"
+          targetId={row.original.id}
+          currentStatus={row.original.status}
+          name={row.original.name}
+        />
+      ),
   },
 ];

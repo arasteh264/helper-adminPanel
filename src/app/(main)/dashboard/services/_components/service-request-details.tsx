@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, LoaderCircle, MapPin, Trash2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, LoaderCircle, MapPin, Trash2, XCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -131,6 +131,7 @@ function Detail({ label, children }: { label: string; children: ReactNode }) {
 
 export function ServiceRequestDetailsPage({ requestId }: { requestId: string }) {
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const [reviewNote, setReviewNote] = useState("");
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -162,6 +163,36 @@ export function ServiceRequestDetailsPage({ requestId }: { requestId: string }) 
     },
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : "لغو درخواست ناموفق بود.");
+    },
+  });
+  const reviewMutation = useMutation({
+    mutationFn: async (decision: "APPROVE" | "REJECT") => {
+      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      return apiFetch<{ id: string; status: string }>(
+        `/admin/service-requests/${encodeURIComponent(requestId)}/review`,
+        session.accessToken,
+        {
+          method: "POST",
+          body: JSON.stringify({ decision, note: reviewNote.trim() || undefined }),
+        },
+      );
+    },
+    onSuccess: async (_result, decision) => {
+      toast.success(
+        decision === "APPROVE"
+          ? "درخواست تأیید شد و برای متخصصان واجد شرایط ارسال می‌شود."
+          : "درخواست با ذکر دلیل رد شد.",
+      );
+      setReviewNote("");
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["admin-service-request-details", requestId],
+        }),
+        queryClient.invalidateQueries({ queryKey: ["service-requests"] }),
+      ]);
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "بررسی درخواست ناموفق بود.");
     },
   });
   const details = detailsQuery.data;
@@ -215,6 +246,53 @@ export function ServiceRequestDetailsPage({ requestId }: { requestId: string }) 
         )}
         {sessionStatus === "authenticated" && details ? (
           <div className="grid gap-4">
+            {details.status === "PENDING_ADMIN_REVIEW" ? (
+              <Card className="border-violet-500/25 bg-violet-500/[0.035]">
+                <CardHeader>
+                  <CardTitle>بررسی پیش از ارسال به متخصص</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  <p className="text-muted-foreground text-sm leading-6">
+                    تا زمان تأیید مدیر، این درخواست برای متخصصان نمایش داده نمی‌شود. در صورت رد، دلیل برای مشتری قابل
+                    مشاهده خواهد بود.
+                  </p>
+                  <label className="grid gap-2 font-medium text-sm">
+                    یادداشت بررسی یا دلیل رد
+                    <textarea
+                      value={reviewNote}
+                      onChange={(event) => setReviewNote(event.target.value)}
+                      maxLength={1000}
+                      rows={3}
+                      placeholder="برای رد درخواست، دلیل را بنویسید؛ یادداشت تأیید اختیاری است."
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 font-normal text-sm leading-6 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                    />
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      disabled={reviewMutation.isPending}
+                      onClick={() => reviewMutation.mutate("APPROVE")}
+                    >
+                      {reviewMutation.isPending ? (
+                        <LoaderCircle className="size-4 animate-spin" />
+                      ) : (
+                        <CheckCircle2 className="size-4" />
+                      )}
+                      تأیید و ارسال برای متخصصان
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      disabled={reviewMutation.isPending || !reviewNote.trim()}
+                      onClick={() => reviewMutation.mutate("REJECT")}
+                    >
+                      <XCircle className="size-4" />
+                      رد درخواست
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
             <Card size="sm">
               <CardHeader>
                 <CardTitle>اطلاعات سرویس</CardTitle>

@@ -1,15 +1,24 @@
 "use client";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { type ColumnDef, Subscribe } from "@tanstack/react-table";
 import { Check, MoreHorizontal, X } from "lucide-react";
 import { toast } from "sonner";
 
+import { AccountStatusAction } from "@/app/(main)/dashboard/_components/account-status-action";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Textarea } from "@/components/ui/textarea";
 import type { DataTableFeatures } from "@/lib/data-table-features";
 import { approveProvider, rejectProvider } from "@/server/admin-provider-actions";
 
@@ -43,22 +53,35 @@ function AvailabilityBadge({ available }: { available: boolean }) {
 
 function ProviderActions({ provider }: { provider: ProviderRow }) {
   const [pending, startTransition] = useTransition();
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectNote, setRejectNote] = useState("");
   const queryClient = useQueryClient();
 
   if (provider.verificationStatus !== "PENDING") {
     return (
-      <Badge variant={provider.verificationStatus === "APPROVED" ? "default" : "destructive"}>
-        {provider.verificationStatus === "APPROVED" ? "تأییدشده" : "ردشده"}
-      </Badge>
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge variant={provider.verificationStatus === "APPROVED" ? "default" : "destructive"}>
+          {provider.verificationStatus === "APPROVED" ? "تأییدشده" : "ردشده"}
+        </Badge>
+        {provider.verificationStatus === "APPROVED" ? (
+          <AccountStatusAction
+            targetType="provider"
+            targetId={provider.id}
+            currentStatus={provider.user.status}
+            name={provider.user.name}
+          />
+        ) : null}
+      </div>
     );
   }
 
-  function run(action: () => Promise<{ ok: boolean; message?: string }>, success: string) {
+  function run(action: () => Promise<{ ok: boolean; message?: string }>, success: string, onSuccess?: () => void) {
     startTransition(async () => {
       const result = await action();
       if (result.ok) {
         toast.success(success);
         await queryClient.invalidateQueries({ queryKey: ["providers", "pending"] });
+        onSuccess?.();
       } else {
         toast.error(result.message ?? "عملیات ناموفق بود");
       }
@@ -85,20 +108,53 @@ function ProviderActions({ provider }: { provider: ProviderRow }) {
             <Check /> تأیید
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            variant="destructive"
-            onSelect={() => {
-              // TODO: به‌جای prompt از یک Dialog با فیلد دلیل رد استفاده کن
-              const note = window.prompt("دلیل رد درخواست؟");
-              if (note) {
-                run(() => rejectProvider(provider.id, note), "درخواست رد شد");
-              }
-            }}
-          >
+          <DropdownMenuItem variant="destructive" onSelect={() => setRejectOpen(true)}>
             <X /> رد درخواست
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <Dialog open={rejectOpen} onOpenChange={(open) => !pending && setRejectOpen(open)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>رد درخواست سرویس‌دهندگی</DialogTitle>
+            <DialogDescription>دلیل رد برای سابقه‌ی بررسی ثبت می‌شود و به متقاضی اعلام خواهد شد.</DialogDescription>
+          </DialogHeader>
+          <form
+            className="grid gap-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const note = rejectNote.trim();
+              if (note.length < 3) return;
+              run(
+                () => rejectProvider(provider.id, note),
+                "درخواست رد شد",
+                () => {
+                  setRejectOpen(false);
+                  setRejectNote("");
+                },
+              );
+            }}
+          >
+            <Textarea
+              required
+              minLength={3}
+              maxLength={500}
+              value={rejectNote}
+              onChange={(event) => setRejectNote(event.target.value)}
+              placeholder="دلیل رد (حداقل ۳ نویسه)"
+              aria-label="دلیل رد درخواست"
+            />
+            <DialogFooter>
+              <Button type="button" variant="outline" disabled={pending} onClick={() => setRejectOpen(false)}>
+                انصراف
+              </Button>
+              <Button type="submit" variant="destructive" disabled={pending || rejectNote.trim().length < 3}>
+                {pending ? "در حال ثبت..." : "رد درخواست"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

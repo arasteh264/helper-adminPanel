@@ -1,5 +1,6 @@
 // dashboard/service-requests/_components/data.ts
 export type ServiceRequestStatus =
+  | "PENDING_ADMIN_REVIEW"
   | "OPEN"
   | "OFFER_ACCEPTED"
   | "CUSTOMER_CONFIRMATION_PENDING"
@@ -10,7 +11,8 @@ export type ServiceRequestStatus =
   | "EXPIRED"
   | "DISPUTED";
 
-export type PreferredTime = "URGENT" | "THIS_WEEK" | "FLEXIBLE";
+export type PreferredTime = "URGENT" | "FLEXIBLE";
+type StoredPreferredTime = PreferredTime | "THIS_WEEK";
 
 export type ServiceRequestRow = {
   id: string;
@@ -21,7 +23,7 @@ export type ServiceRequestRow = {
   description: string;
   status: ServiceRequestStatus;
   address: string | null;
-  preferredTime: PreferredTime | null;
+  preferredTime: StoredPreferredTime | null;
   budgetMin: number | null;
   budgetMax: number | null;
   scheduledAt: string | null;
@@ -33,6 +35,10 @@ export type ServiceRequestRow = {
 };
 
 export const statusMeta: Record<ServiceRequestStatus, { label: string; dotClass: string }> = {
+  PENDING_ADMIN_REVIEW: {
+    label: "در انتظار بررسی مدیر",
+    dotClass: "bg-violet-500",
+  },
   OPEN: { label: "باز", dotClass: "bg-blue-500" },
   OFFER_ACCEPTED: {
     label: "پیشنهاد پذیرفته\u200cشده",
@@ -53,10 +59,10 @@ export const statusMeta: Record<ServiceRequestStatus, { label: string; dotClass:
   DISPUTED: { label: "مناقشه\u200cدار", dotClass: "bg-red-500" },
 };
 
-export const preferredTimeMeta: Record<PreferredTime, string> = {
+export const preferredTimeMeta: Record<StoredPreferredTime, string> = {
   URGENT: "فوری",
-  THIS_WEEK: "همین هفته",
   FLEXIBLE: "منعطف",
+  THIS_WEEK: "زمان ثبت‌شده‌ی قدیمی",
 };
 
 export type ServiceRequestFilters = {

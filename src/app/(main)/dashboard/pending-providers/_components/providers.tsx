@@ -1,10 +1,14 @@
 "use client";
 import * as React from "react";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { type ColumnVisibilityState, type PaginationState, type SortingState, useTable } from "@tanstack/react-table";
 import { Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 
+import { AdminExportButton } from "@/app/(main)/dashboard/_components/admin-export-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
@@ -26,12 +30,12 @@ const verificationStatuses = {
   REJECTED: "ردشده",
 } as const;
 
-export function PendingProviders() {
+export function PendingProviders({ verificationStatus = "PENDING" }: { verificationStatus?: "PENDING" | "APPROVED" }) {
   const { status } = useSession();
+  const router = useRouter();
   const [search, setSearch] = React.useState("");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [availabilityFilter, setAvailabilityFilter] = React.useState<"All" | "available" | "unavailable">("All");
-  const [verificationFilter, setVerificationFilter] = React.useState<"ALL" | keyof typeof verificationStatuses>("ALL");
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -41,7 +45,7 @@ export function PendingProviders() {
     pageSize: pagination.pageSize,
     search: searchQuery,
     availability: availabilityFilter,
-    ...(verificationFilter === "ALL" ? {} : { status: verificationFilter }),
+    status: verificationStatus,
   });
   const providers = data?.items ?? EMPTY;
   const resetToFirstPage = () => {
@@ -61,7 +65,17 @@ export function PendingProviders() {
   // سرویس‌دهنده‌ای که برای بررسی مدارک انتخاب شده؛ باز/بسته بودن Dialog از روی همین مشتق می‌شه
   const [selectedProvider, setSelectedProvider] = React.useState<ProviderRow | null>(null);
 
-  const columns = React.useMemo(() => providersColumns(setSelectedProvider), []);
+  const columns = React.useMemo(
+    () =>
+      providersColumns((provider) => {
+        if (verificationStatus === "APPROVED") {
+          router.push(`/dashboard/providers/${encodeURIComponent(provider.id)}`);
+          return;
+        }
+        setSelectedProvider(provider);
+      }),
+    [verificationStatus, router],
+  );
 
   const table = useTable({
     features: dataTableFeatures,
@@ -87,8 +101,22 @@ export function PendingProviders() {
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
   const pageHeading = (
     <header>
-      <h1 className="font-semibold text-2xl">مدیریت سرویس‌دهندگان</h1>
-      <p className="mt-1 text-muted-foreground text-sm">درخواست‌ها و وضعیت تأیید سرویس‌دهندگان را بررسی کنید.</p>
+      <h1 className="font-semibold text-2xl">
+        {verificationStatus === "PENDING" ? "ثبت‌نام‌های در انتظار تأیید" : "فهرست متخصصان"}
+      </h1>
+      <p className="mt-1 text-muted-foreground text-sm">
+        {verificationStatus === "PENDING"
+          ? "فقط پرونده‌های نیازمند بررسی ثبت‌نام در این فهرست نمایش داده می‌شوند."
+          : "متخصصان تأییدشده را جستجو کنید و برای مشاهده جزئیات، نام آن‌ها را باز کنید."}
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Button asChild size="sm" variant={verificationStatus === "PENDING" ? "default" : "outline"}>
+          <Link href="/dashboard/pending-providers">در انتظار تأیید</Link>
+        </Button>
+        <Button asChild size="sm" variant={verificationStatus === "APPROVED" ? "default" : "outline"}>
+          <Link href="/dashboard/providers">فهرست متخصصان</Link>
+        </Button>
+      </div>
     </header>
   );
 
@@ -135,12 +163,14 @@ export function PendingProviders() {
       <Card>
         <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
           <CardTitle className="text-xl leading-none">
-            سرویس‌دهندگان {verificationFilter === "ALL" ? "در همه‌ی وضعیت‌ها" : verificationStatuses[verificationFilter]}
+            {verificationStatus === "PENDING" ? "در انتظار تأیید" : verificationStatuses.APPROVED}
           </CardTitle>
           <CardDescription className="max-w-sm leading-snug">
-            {data?.total.toLocaleString("fa-IR") ?? "—"} مورد · فهرست و بررسی وضعیت ثبت‌نام
+            {data?.total.toLocaleString("fa-IR") ?? "—"} مورد ·{" "}
+            {verificationStatus === "PENDING" ? "صف بررسی ثبت‌نام" : "مدیریت متخصصان تأییدشده"}
           </CardDescription>
           <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
+            <AdminExportButton dataset="providers" label="خروجی همه‌ی متخصصان" />
             <InputGroup className="h-7 w-full md:w-64">
               <InputGroupAddon align="inline-start">
                 <Search className="size-3.5" />
@@ -162,26 +192,6 @@ export function PendingProviders() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4 px-0">
           <div className="flex flex-wrap items-center gap-3 px-4">
-            <Select
-              value={verificationFilter}
-              onValueChange={(value) => {
-                setVerificationFilter(value as typeof verificationFilter);
-                resetToFirstPage();
-              }}
-            >
-              <SelectTrigger size="sm" aria-label="فیلتر وضعیت تأیید">
-                <span className="text-muted-foreground">وضعیت تأیید:</span>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper" align="start">
-                <SelectGroup>
-                  <SelectItem value="PENDING">در انتظار تأیید</SelectItem>
-                  <SelectItem value="APPROVED">تأییدشده</SelectItem>
-                  <SelectItem value="REJECTED">ردشده</SelectItem>
-                  <SelectItem value="ALL">همه‌ی وضعیت‌ها</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
             <Select
               value={availabilityFilter}
               onValueChange={(value) => {
