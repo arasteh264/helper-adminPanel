@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 
 import { toast } from "sonner";
 
+import { AdminExportButton } from "@/app/(main)/dashboard/_components/admin-export-button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -86,6 +87,9 @@ export function PayoutsTab() {
       <CardHeader className="border-b">
         <CardTitle>درخواست‌های برداشت سرویس‌دهندگان</CardTitle>
         <CardDescription>مقصد بانکی مطابق اطلاعات ثبت‌شده در زمان درخواست نمایش داده می‌شود.</CardDescription>
+        <CardAction>
+          <AdminExportButton dataset="payouts" label="خروجی برداشت‌ها" />
+        </CardAction>
       </CardHeader>
       <CardContent className="grid gap-3 px-0">
         <div className="px-4">

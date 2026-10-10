@@ -7,6 +7,7 @@ import { useTable } from "@tanstack/react-table";
 import { RefreshCw, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 
+import { AdminExportButton } from "@/app/(main)/dashboard/_components/admin-export-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
@@ -126,6 +127,7 @@ export function Users() {
             {total.toLocaleString("fa-IR")} کاربر ثبت‌شده
           </CardDescription>
           <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
+            <AdminExportButton dataset="users" label="خروجی کاربران" />
             <InputGroup className="h-9 w-full md:w-72">
               <InputGroupAddon align="inline-start">
                 <Search className="size-4" />

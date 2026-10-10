@@ -12,7 +12,7 @@ export type ProviderRow = {
   avatarUrl: string | null;
   serviceAreaLatitude: number | null;
   serviceAreaLongitude: number | null;
-  user: { name: string; email: string; phone: string };
+  user: { name: string; email: string; phone: string; status: "ACTIVE" | "INACTIVE" | "SUSPENDED" };
   skills: { id: string; name: string }[];
   workingHours: {
     dayOfWeek: number;

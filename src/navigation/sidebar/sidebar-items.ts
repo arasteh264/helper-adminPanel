@@ -8,6 +8,7 @@ import {
   type LucideIcon,
   MessageSquareText,
   Percent,
+  ScrollText,
   Stethoscope,
   Users,
 } from "lucide-react";
@@ -66,25 +67,93 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 2,
-    label: "مدیریت عملیات",
+    label: "صف‌های نیازمند اقدام",
     items: [
       {
-        id: "users",
-        title: "کاربران",
-        url: "/dashboard/users",
-        icon: Users,
-      },
-      {
         id: "pending-providers",
-        title: "سرویس‌دهندگان",
+        title: "ثبت‌نام‌های در انتظار تأیید",
         url: "/dashboard/pending-providers",
         icon: Users,
       },
       {
         id: "service-requests",
-        title: "درخواست‌های سرویس",
+        title: "در انتظار بررسی مدیر",
+        url: "/dashboard/services/review",
+        icon: ClipboardList,
+      },
+      {
+        id: "service-request-disputes",
+        title: "اختلاف‌های سرویس",
+        url: "/dashboard/services/disputes",
+        icon: ClipboardList,
+      },
+    ],
+  },
+  {
+    id: 3,
+    label: "مالی و پرداخت‌ها",
+    items: [
+      {
+        id: "accounting",
+        title: "امور مالی",
+        url: "/dashboard/accounting",
+        icon: Banknote,
+        subItems: [
+          {
+            id: "provider-payouts",
+            title: "درخواست‌های برداشت",
+            url: "/dashboard/accounting/payouts",
+            icon: Banknote,
+          },
+          {
+            id: "customer-payments",
+            title: "پرداخت‌های مشتریان",
+            url: "/dashboard/accounting/payments",
+            icon: CreditCard,
+          },
+          {
+            id: "financial-overview",
+            title: "گزارش مالی",
+            url: "/dashboard/accounting",
+            icon: ChartNoAxesCombined,
+          },
+          {
+            id: "wallet-ledger",
+            title: "گردش کیف پول",
+            url: "/dashboard/accounting/ledger",
+            icon: BookOpenText,
+          },
+          {
+            id: "commission-settings",
+            title: "تنظیم کمیسیون",
+            url: "/dashboard/accounting/commission",
+            icon: Percent,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 4,
+    label: "مدیریت کاربران و سرویس‌ها",
+    items: [
+      {
+        id: "all-service-requests",
+        title: "همه‌ی درخواست‌های سرویس",
         url: "/dashboard/services",
         icon: ClipboardList,
+      },
+      {
+        id: "providers",
+        title: "فهرست متخصصان",
+        url: "/dashboard/providers",
+        icon: Users,
+      },
+      {
+        id: "users",
+        title: "کاربران",
+        url: "/dashboard/users",
+        icon: Users,
       },
       {
         id: "conversations",
@@ -95,8 +164,8 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 3,
-    label: "تنظیمات پایه",
+    id: 5,
+    label: "محتوا و تنظیمات پایه",
     items: [
       {
         id: "specialties",
@@ -113,46 +182,14 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 4,
-    label: "مالی",
+    id: 6,
+    label: "گزارش و پیگیری",
     items: [
       {
-        id: "accounting",
-        title: "امور مالی",
-        url: "/dashboard/accounting",
-        icon: Banknote,
-        subItems: [
-          {
-            id: "financial-overview",
-            title: "گزارش مالی",
-            url: "/dashboard/accounting",
-            icon: ChartNoAxesCombined,
-          },
-          {
-            id: "customer-payments",
-            title: "پرداخت‌های مشتریان",
-            url: "/dashboard/accounting/payments",
-            icon: CreditCard,
-          },
-          {
-            id: "provider-payouts",
-            title: "درخواست‌های برداشت",
-            url: "/dashboard/accounting/payouts",
-            icon: Banknote,
-          },
-          {
-            id: "wallet-ledger",
-            title: "گردش کیف پول",
-            url: "/dashboard/accounting/ledger",
-            icon: BookOpenText,
-          },
-          {
-            id: "commission-settings",
-            title: "تنظیم کمیسیون",
-            url: "/dashboard/accounting/commission",
-            icon: Percent,
-          },
-        ],
+        id: "audit-logs",
+        title: "سوابق اقدامات مدیران",
+        url: "/dashboard/audit-logs",
+        icon: ScrollText,
       },
     ],
   },

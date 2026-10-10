@@ -31,15 +31,16 @@ export function LoginForm() {
       const result = await signIn("credentials", {
         identifier: data.identifier,
         password: data.password,
+        redirectTo: "/dashboard",
         redirect: false,
       });
 
-      if (!result.ok) {
+      if (!result.ok || result.error || !result.url) {
         toast.error("اطلاعات ورود معتبر نیست یا حساب شما دسترسی ادمین ندارد");
         return;
       }
 
-      window.location.assign("/dashboard");
+      window.location.assign(result.url);
     } catch {
       toast.error("ارتباط با سرویس ورود برقرار نشد؛ اتصال API را بررسی کنید.");
     }

@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { formatToman } from "../../accounting/_components/data";
 import { useAccountingSummary } from "../../accounting/_components/use-wallet-admin";
 import { usePendingProviders } from "../../pending-providers/_components/use-providers";
+import { OperationalAlerts } from "./operational-alerts";
 import { SpecialistInsights } from "./specialist-insights";
 
 function MetricCard({
@@ -140,6 +141,7 @@ export function OperationsDashboard() {
         />
       </section>
 
+      <OperationalAlerts />
       <SpecialistInsights />
 
       <Card>

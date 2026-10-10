@@ -246,10 +246,10 @@ export function useUpdateCommission() {
   const { token } = useAdminToken();
   const client = useQueryClient();
   return useMutation({
-    mutationFn: (commissionRate: number) =>
+    mutationFn: (input: { commissionRate: number; reason: string }) =>
       apiFetch<WalletConfiguration>("/admin/wallets/configuration/commission", token as string, {
         method: "PUT",
-        body: JSON.stringify({ commissionRate }),
+        body: JSON.stringify(input),
       }),
     onSuccess: () =>
       Promise.all([
