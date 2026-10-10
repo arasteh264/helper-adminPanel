@@ -9,6 +9,7 @@ import {
   MessageSquareText,
   Percent,
   ScrollText,
+  Send,
   Stethoscope,
   Users,
 } from "lucide-react";
@@ -148,6 +149,12 @@ export const sidebarItems: NavGroup[] = [
         title: "فهرست متخصصان",
         url: "/dashboard/providers",
         icon: Users,
+      },
+      {
+        id: "provider-invitations",
+        title: "دعوت متخصص با پیامک",
+        url: "/dashboard/providers/invitations",
+        icon: Send,
       },
       {
         id: "users",
