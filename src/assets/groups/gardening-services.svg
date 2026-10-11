@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<defs><filter id="s" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#173227" flood-opacity="0.08"/></filter></defs>
+<rect x="24" y="24" width="464" height="464" rx="110" fill="#DDE8E1" filter="url(#s)"/>
+<circle cx="400" cy="112" r="46" fill="#DDE8E1" opacity=".7"/>
+<path d="M256 380V240" stroke="#173227" stroke-width="16" stroke-linecap="round"/><path d="M256 270C190 270 150 230 150 160c70 0 106 40 106 110z" fill="#1F7A5C"/><path d="M256 230c0-60 36-96 106-96 0 66-40 96-106 96z" fill="#1F7A5C" opacity=".85"/><path d="M200 380h112l-14 -34H214z" fill="#D99C5C"/><circle cx="380" cy="130" r="22" fill="#D99C5C"/></svg>

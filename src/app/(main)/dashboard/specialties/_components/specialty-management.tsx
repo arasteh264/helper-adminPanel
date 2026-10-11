@@ -2,7 +2,7 @@
 
 import { type ChangeEvent, type FormEvent, type MouseEvent, useEffect, useState } from "react";
 
-import Image from "next/image";
+import Image, { type ImageProps } from "next/image";
 
 import { FileImage, LoaderCircle, Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -40,6 +40,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatGroupedInteger, normalizeIntegerInput } from "@/lib/number-format";
 
 import { ApiError, type Specialty, type SpecialtyGroup } from "./api";
 import {
@@ -53,6 +54,81 @@ import {
 
 const MAX_ICON_SIZE = 2 * 1024 * 1024;
 const LIST_PAGE_SIZE = 10;
+
+function IconThumbnail({
+  icon,
+  slug,
+  assetType,
+  alt,
+  className,
+  fill = false,
+  width = 64,
+  height = 44,
+}: {
+  icon: string | null;
+  slug: string;
+  assetType: "groups" | "specialties";
+  alt: string;
+  className: string;
+  fill?: boolean;
+  width?: number;
+  height?: number;
+}) {
+  const [localIcon, setLocalIcon] = useState<ImageProps["src"] | null>(null);
+  const [remoteIconFailed, setRemoteIconFailed] = useState(false);
+  const [localIconFailed, setLocalIconFailed] = useState(false);
+
+  useEffect(() => {
+    let isCurrent = true;
+    setLocalIcon(null);
+    setRemoteIconFailed(false);
+    setLocalIconFailed(false);
+    if (!slug) return;
+
+    import(`@/assets/${assetType}/${slug}.svg`)
+      .then(({ default: asset }) => {
+        if (isCurrent) setLocalIcon(asset);
+      })
+      .catch(() => {
+        if (isCurrent) setLocalIcon(null);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [assetType, slug]);
+
+  let source: ImageProps["src"] | null = localIconFailed ? null : localIcon;
+  if (icon && !remoteIconFailed) source = icon;
+  if (!source) {
+    const fallbackClassName = fill
+      ? "absolute inset-0 flex size-full items-center justify-center rounded-md bg-muted text-muted-foreground"
+      : `${className} flex items-center justify-center rounded-md bg-muted text-muted-foreground`;
+    return (
+      <span className={fallbackClassName}>
+        <FileImage className="size-5" />
+      </span>
+    );
+  }
+
+  const imageSizing = fill ? { fill: true as const } : { width, height };
+  return (
+    <Image
+      src={source}
+      alt={alt}
+      {...imageSizing}
+      unoptimized
+      onError={() => {
+        if (icon && !remoteIconFailed) {
+          setRemoteIconFailed(true);
+        } else {
+          setLocalIconFailed(true);
+        }
+      }}
+      className={className}
+    />
+  );
+}
 
 function ListPagination({
   label,
@@ -108,12 +184,22 @@ function appendFormValues(
 
 function IconField({
   icon,
+  slug,
+  assetType,
   file,
   onChange,
+  currentIconRemoved,
+  onRemoveCurrentIcon,
+  onRestoreCurrentIcon,
 }: {
   icon: string | null;
+  slug: string;
+  assetType: "groups" | "specialties";
   file: File | undefined;
   onChange: (file?: File) => void;
+  currentIconRemoved: boolean;
+  onRemoveCurrentIcon: () => void;
+  onRestoreCurrentIcon: () => void;
 }) {
   function selectFile(event: ChangeEvent<HTMLInputElement>) {
     const selected = event.target.files?.[0];
@@ -134,18 +220,41 @@ function IconField({
   return (
     <div className="grid gap-2">
       <Label htmlFor="specialty-icon">تصویر دسته یا خدمت</Label>
-      {icon ? (
+      {(icon || slug) && !currentIconRemoved ? (
         <div className="grid gap-2">
           <div className="relative aspect-[16/9] overflow-hidden rounded-xl border bg-muted">
-            <Image
-              src={icon}
+            <IconThumbnail
+              icon={icon}
+              slug={slug}
+              assetType={assetType}
               alt="تصویر فعلی خدمت"
               fill
-              sizes="(max-width: 640px) 100vw, 32rem"
               className="object-cover"
             />
           </div>
-          <p className="text-muted-foreground text-xs">با انتخاب عکس جدید جایگزین می‌شود.</p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-muted-foreground text-xs">
+              {icon
+                ? "با انتخاب تصویر جدید، تصویر سفارشی جایگزین می‌شود؛ در غیر این صورت آیکون پیش‌فرض نمایش داده می‌شود."
+                : "این آیکون پیش‌فرض از فایل SVG متناظر با شناسه‌ی خدمت خوانده می‌شود."}
+            </p>
+            {icon ? (
+              <Button type="button" size="sm" variant="outline" onClick={onRemoveCurrentIcon}>
+                <Trash2 className="size-4" />
+                حذف تصویر سفارشی
+              </Button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+      {icon && currentIconRemoved ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-destructive/20 bg-destructive/5 p-3">
+          <span className="text-destructive text-sm">
+            تصویر سفارشی حذف می‌شود و آیکون پیش‌فرض دوباره نمایش داده می‌شود.
+          </span>
+          <Button type="button" size="sm" variant="outline" onClick={onRestoreCurrentIcon}>
+            بازگرداندن تصویر
+          </Button>
         </div>
       ) : null}
       {file ? (
@@ -183,6 +292,7 @@ function GroupDialog({ group, onClose }: { group?: SpecialtyGroup; onClose: () =
   const [sortOrder, setSortOrder] = useState(String(group?.sortOrder ?? 0));
   const [isActive, setIsActive] = useState(group?.isActive ?? true);
   const [iconFile, setIconFile] = useState<File>();
+  const [removeCurrentIcon, setRemoveCurrentIcon] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -194,6 +304,7 @@ function GroupDialog({ group, onClose }: { group?: SpecialtyGroup; onClose: () =
       isActive,
     });
     if (iconFile) formData.set("icon", iconFile);
+    if (removeCurrentIcon) formData.set("removeIcon", "true");
 
     try {
       await mutation.mutateAsync({ id: group?.id, formData });
@@ -237,16 +348,30 @@ function GroupDialog({ group, onClose }: { group?: SpecialtyGroup; onClose: () =
             <Label htmlFor="group-order">ترتیب نمایش</Label>
             <Input
               id="group-order"
-              type="number"
-              min={0}
-              step={1}
-              value={sortOrder}
-              onChange={(event) => setSortOrder(event.target.value)}
+              type="text"
+              inputMode="numeric"
+              value={formatGroupedInteger(sortOrder)}
+              onChange={(event) => setSortOrder(normalizeIntegerInput(event.target.value))}
               required
             />
           </div>
           <ActiveCheckbox checked={isActive} onCheckedChange={setIsActive} />
-          <IconField icon={group?.icon ?? null} file={iconFile} onChange={setIconFile} />
+          <IconField
+            icon={group?.icon ?? null}
+            slug={group?.slug ?? ""}
+            assetType="groups"
+            file={iconFile}
+            currentIconRemoved={removeCurrentIcon}
+            onChange={(file) => {
+              setIconFile(file);
+              if (file) setRemoveCurrentIcon(false);
+            }}
+            onRemoveCurrentIcon={() => {
+              setIconFile(undefined);
+              setRemoveCurrentIcon(true);
+            }}
+            onRestoreCurrentIcon={() => setRemoveCurrentIcon(false)}
+          />
         </form>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>
@@ -280,6 +405,7 @@ function SpecialtyDialog({
   const [sortOrder, setSortOrder] = useState(String(specialty?.sortOrder ?? 0));
   const [isActive, setIsActive] = useState(specialty?.isActive ?? true);
   const [iconFile, setIconFile] = useState<File>();
+  const [removeCurrentIcon, setRemoveCurrentIcon] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -292,6 +418,7 @@ function SpecialtyDialog({
     });
     formData.set("groupId", groupId);
     if (iconFile) formData.set("icon", iconFile);
+    if (removeCurrentIcon) formData.set("removeIcon", "true");
 
     try {
       await mutation.mutateAsync({ id: specialty?.id, formData });
@@ -351,16 +478,30 @@ function SpecialtyDialog({
             <Label htmlFor="specialty-order">ترتیب نمایش</Label>
             <Input
               id="specialty-order"
-              type="number"
-              min={0}
-              step={1}
-              value={sortOrder}
-              onChange={(event) => setSortOrder(event.target.value)}
+              type="text"
+              inputMode="numeric"
+              value={formatGroupedInteger(sortOrder)}
+              onChange={(event) => setSortOrder(normalizeIntegerInput(event.target.value))}
               required
             />
           </div>
           <ActiveCheckbox checked={isActive} onCheckedChange={setIsActive} />
-          <IconField icon={specialty?.icon ?? null} file={iconFile} onChange={setIconFile} />
+          <IconField
+            icon={specialty?.icon ?? null}
+            slug={specialty?.slug ?? ""}
+            assetType="specialties"
+            file={iconFile}
+            currentIconRemoved={removeCurrentIcon}
+            onChange={(file) => {
+              setIconFile(file);
+              if (file) setRemoveCurrentIcon(false);
+            }}
+            onRemoveCurrentIcon={() => {
+              setIconFile(undefined);
+              setRemoveCurrentIcon(true);
+            }}
+            onRestoreCurrentIcon={() => setRemoveCurrentIcon(false)}
+          />
         </form>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>
@@ -566,13 +707,12 @@ export function SpecialtyManagement() {
                     key={group.id}
                     className={`flex items-center gap-1 rounded-md border p-2 ${selectedGroupId === group.id ? "border-primary/40 bg-muted/60" : "border-transparent"}`}
                   >
-                    {group.icon ? (
-                      <Image
-                        src={group.icon}
-                        alt=""
-                        width={64}
-                        height={44}
-                        unoptimized
+                    {group.icon || group.slug ? (
+                      <IconThumbnail
+                        icon={group.icon}
+                        slug={group.slug}
+                        assetType="groups"
+                        alt={`تصویر گروه ${group.name}`}
                         className="h-11 w-16 shrink-0 rounded-md object-cover"
                       />
                     ) : (
@@ -634,56 +774,58 @@ export function SpecialtyManagement() {
                   message={getErrorMessage(specialtiesQuery.error, "دریافت تخصص‌ها ناموفق بود")}
                   onRetry={() => void specialtiesQuery.refetch()}
                 />
-              ) : specialtiesQuery.isPending && selectedGroupId ? (
+              ) : null}
+              {!specialtiesQuery.isError && specialtiesQuery.isPending && selectedGroupId ? (
                 <div className="flex justify-center py-8 text-muted-foreground">
                   <LoaderCircle className="animate-spin" />
                   <span className="sr-only">در حال دریافت تخصص‌ها</span>
                 </div>
-              ) : specialties.length ? (
-                visibleSpecialties.map((specialty) => (
-                  <div key={specialty.id} className="flex flex-wrap items-center gap-2 border-b py-2 last:border-b-0">
-                    {specialty.icon ? (
-                      <Image
-                        src={specialty.icon}
-                        alt=""
-                        width={64}
-                        height={44}
-                        unoptimized
-                        className="h-11 w-16 shrink-0 rounded-md object-cover"
-                      />
-                    ) : (
-                      <span className="flex h-11 w-16 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-                        <FileImage className="size-5" />
-                      </span>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-medium">{specialty.name}</span>
-                        <Badge variant={specialty.isActive ? "default" : "secondary"}>
-                          {specialty.isActive ? "فعال" : "غیرفعال"}
-                        </Badge>
+              ) : null}
+              {!specialtiesQuery.isError && !specialtiesQuery.isPending && specialties.length > 0
+                ? visibleSpecialties.map((specialty) => (
+                    <div key={specialty.id} className="flex flex-wrap items-center gap-2 border-b py-2 last:border-b-0">
+                      {specialty.icon || specialty.slug ? (
+                        <IconThumbnail
+                          icon={specialty.icon}
+                          slug={specialty.slug}
+                          assetType="specialties"
+                          alt={`تصویر تخصص ${specialty.name}`}
+                          className="h-11 w-16 shrink-0 rounded-md object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-11 w-16 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                          <FileImage className="size-5" />
+                        </span>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-medium">{specialty.name}</span>
+                          <Badge variant={specialty.isActive ? "default" : "secondary"}>
+                            {specialty.isActive ? "فعال" : "غیرفعال"}
+                          </Badge>
+                        </div>
+                        <span className="text-muted-foreground text-xs" dir="ltr">
+                          {specialty.slug} · ترتیب {specialty.sortOrder}
+                        </span>
                       </div>
-                      <span className="text-muted-foreground text-xs" dir="ltr">
-                        {specialty.slug} · ترتیب {specialty.sortOrder}
-                      </span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`ویرایش ${specialty.name}`}
+                        onClick={() => setSpecialtyDialog({ specialty })}
+                      >
+                        <Pencil />
+                      </Button>
+                      <DeleteConfirmation
+                        title="حذف تخصص"
+                        description={`تخصص «${specialty.name}» حذف شود؟`}
+                        onDelete={() => removeSpecialty(specialty)}
+                      />
                     </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={`ویرایش ${specialty.name}`}
-                      onClick={() => setSpecialtyDialog({ specialty })}
-                    >
-                      <Pencil />
-                    </Button>
-                    <DeleteConfirmation
-                      title="حذف تخصص"
-                      description={`تخصص «${specialty.name}» حذف شود؟`}
-                      onDelete={() => removeSpecialty(specialty)}
-                    />
-                  </div>
-                ))
-              ) : selectedGroup ? (
+                  ))
+                : null}
+              {!specialtiesQuery.isError && !specialtiesQuery.isPending && selectedGroup && specialties.length === 0 ? (
                 <p className="py-5 text-center text-muted-foreground text-sm">تخصصی در این گروه ثبت نشده است.</p>
               ) : null}
               <ListPagination

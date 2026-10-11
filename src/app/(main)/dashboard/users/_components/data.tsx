@@ -8,6 +8,7 @@ export type UserRow = {
   role: UserRole;
   status: UserStatus;
   joinedDate: string;
+  canDelete: boolean;
 };
 
 export const roleLabels: Record<UserRole, string> = {
