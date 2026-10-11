@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatGroupedDecimalInput, normalizeDecimalInput } from "@/lib/number-format";
 
 import { CommissionTrend } from "./commission-trend";
 import { formatToman } from "./data";
@@ -253,12 +254,10 @@ function CommissionSettings() {
             <Label htmlFor="commission-rate">نرخ کمیسیون (%)</Label>
             <Input
               id="commission-rate"
-              type="number"
-              min="0"
-              max="100"
-              step="0.01"
-              value={rate}
-              onChange={(event) => setRate(event.target.value)}
+              type="text"
+              inputMode="decimal"
+              value={formatGroupedDecimalInput(rate)}
+              onChange={(event) => setRate(normalizeDecimalInput(event.target.value))}
               className="w-full sm:w-48"
             />
           </div>
@@ -295,7 +294,8 @@ function CommissionSettings() {
           <AlertDialogHeader>
             <AlertDialogTitle>تأیید تغییر کمیسیون</AlertDialogTitle>
             <AlertDialogDescription>
-              نرخ کمیسیون از {configuration.commissionRate}% به {rate}% تغییر می‌کند. این تصمیم مالی را تأیید می‌کنید؟
+              نرخ کمیسیون از {formatGroupedDecimalInput(String(configuration.commissionRate))}% به{" "}
+              {formatGroupedDecimalInput(rate)}% تغییر می‌کند. این تصمیم مالی را تأیید می‌کنید؟
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

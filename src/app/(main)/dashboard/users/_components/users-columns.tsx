@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import type { DataTableFeatures } from "@/lib/data-table-features";
 
 import { roleLabels, statusMeta, type UserRow } from "./data";
+import { UserDeleteAction } from "./user-delete-action";
 
 function StatusBadge({ status }: { status: UserRow["status"] }) {
   const meta = statusMeta[status];
@@ -80,12 +81,15 @@ export const usersColumns: ColumnDef<DataTableFeatures, UserRow>[] = [
     enableHiding: false,
     cell: ({ row }) =>
       row.original.role === "ADMIN" ? null : (
-        <AccountStatusAction
-          targetType="user"
-          targetId={row.original.id}
-          currentStatus={row.original.status}
-          name={row.original.name}
-        />
+        <div className="flex items-center gap-1">
+          <AccountStatusAction
+            targetType="user"
+            targetId={row.original.id}
+            currentStatus={row.original.status}
+            name={row.original.name}
+          />
+          {row.original.canDelete ? <UserDeleteAction userId={row.original.id} name={row.original.name} /> : null}
+        </div>
       ),
   },
 ];

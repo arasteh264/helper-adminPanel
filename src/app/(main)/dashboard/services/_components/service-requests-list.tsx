@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { dataTableFeatures } from "@/lib/data-table-features";
+import { formatGroupedInteger, normalizeIntegerInput } from "@/lib/number-format";
 
 import { PersianDatePicker } from "../../_components/persian-date-picker";
 import {
@@ -280,22 +281,24 @@ export function ServiceRequestsList({ initialStatus }: { initialStatus?: Service
 
             <div className="flex items-center gap-1.5">
               <Input
-                type="number"
+                type="text"
+                inputMode="numeric"
                 placeholder="بودجه از"
                 className="h-8 w-28"
-                value={budgetFrom}
+                value={formatGroupedInteger(budgetFrom)}
                 onChange={(e) => {
-                  setBudgetFrom(e.target.value);
+                  setBudgetFrom(normalizeIntegerInput(e.target.value));
                   resetToFirstPage();
                 }}
               />
               <Input
-                type="number"
+                type="text"
+                inputMode="numeric"
                 placeholder="بودجه تا"
                 className="h-8 w-28"
-                value={budgetTo}
+                value={formatGroupedInteger(budgetTo)}
                 onChange={(e) => {
-                  setBudgetTo(e.target.value);
+                  setBudgetTo(normalizeIntegerInput(e.target.value));
                   resetToFirstPage();
                 }}
               />

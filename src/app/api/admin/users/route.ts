@@ -10,6 +10,7 @@ type ApiUser = {
   role: UserRole;
   status: UserStatus;
   createdAt: string;
+  canDelete: boolean;
 };
 
 type ApiUsersResponse = {
@@ -59,6 +60,7 @@ export async function GET(request: Request) {
     role: user.role,
     status: user.status,
     joinedDate: user.createdAt,
+    canDelete: user.canDelete,
   }));
 
   return Response.json({ items, total: data.total }, { headers: { "Cache-Control": "no-store" } });
