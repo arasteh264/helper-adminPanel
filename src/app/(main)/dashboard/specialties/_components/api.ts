@@ -27,6 +27,7 @@ export type Specialty = {
   sortOrder: number;
   isActive: boolean;
   activeProvidersCount?: number;
+  allowsQuoteItems: boolean;
 };
 
 type DataResponse<T> = T[] | { data: T[] };

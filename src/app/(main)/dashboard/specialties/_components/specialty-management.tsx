@@ -404,6 +404,7 @@ function SpecialtyDialog({
   const [slug, setSlug] = useState(specialty?.slug ?? "");
   const [sortOrder, setSortOrder] = useState(String(specialty?.sortOrder ?? 0));
   const [isActive, setIsActive] = useState(specialty?.isActive ?? true);
+  const [allowsQuoteItems, setAllowsQuoteItems] = useState(specialty?.allowsQuoteItems ?? false);
   const [iconFile, setIconFile] = useState<File>();
   const [removeCurrentIcon, setRemoveCurrentIcon] = useState(false);
 
@@ -417,6 +418,7 @@ function SpecialtyDialog({
       isActive,
     });
     formData.set("groupId", groupId);
+    formData.set("allowsQuoteItems", String(allowsQuoteItems));
     if (iconFile) formData.set("icon", iconFile);
     if (removeCurrentIcon) formData.set("removeIcon", "true");
 
@@ -486,6 +488,15 @@ function SpecialtyDialog({
             />
           </div>
           <ActiveCheckbox checked={isActive} onCheckedChange={setIsActive} />
+          <Label className="flex cursor-pointer items-start gap-2">
+            <Checkbox checked={allowsQuoteItems} onCheckedChange={(value) => setAllowsQuoteItems(value === true)} />
+            <span>
+              اجازه‌ی ثبت هزینه‌ی قطعات و مواد
+              <span className="mt-0.5 block font-normal text-muted-foreground text-xs">
+                متخصص می‌تواند اقلام لازم را در پیشنهاد قیمت به مشتری اعلام کند.
+              </span>
+            </span>
+          </Label>
           <IconField
             icon={specialty?.icon ?? null}
             slug={specialty?.slug ?? ""}
