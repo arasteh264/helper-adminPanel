@@ -20,7 +20,13 @@ export type PageResult<T> = {
   total: number;
 };
 
-export type WalletTransactionType = "EARNING" | "COMMISSION" | "PAYOUT_REQUEST" | "PAYOUT_REFUND" | "ADJUSTMENT";
+export type WalletTransactionType =
+  | "EARNING"
+  | "COMMISSION"
+  | "PAYOUT_REQUEST"
+  | "PAYOUT_REFUND"
+  | "ADJUSTMENT"
+  | "STORY_PROMOTION";
 export type WalletTransaction = {
   id: string;
   providerName: string;
@@ -75,6 +81,7 @@ export const transactionTypeLabels: Record<WalletTransactionType, string> = {
   PAYOUT_REQUEST: "درخواست برداشت",
   PAYOUT_REFUND: "بازگشت برداشت",
   ADJUSTMENT: "اصلاح موجودی",
+  STORY_PROMOTION: "هزینه انتشار استوری",
 };
 
 export const payoutStatusLabels: Record<PayoutStatus, string> = {

@@ -6,7 +6,7 @@ import { LoginForm } from "../../_components/login-form";
 
 export const metadata: Metadata = {
   title: "ورود مدیر",
-  description: "ورود مدیران به پنل مدیریت هلپر",
+  description: "ورود مدیران به پنل مدیریت هلپا24",
 };
 
 export default function LoginV2() {

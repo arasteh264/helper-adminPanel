@@ -17,7 +17,7 @@ export default function Layout({ children }: Readonly<{ children: ReactNode }>) 
               </span>
               <div className="space-y-2">
                 <h1 className="font-bold text-3xl">{APP_CONFIG.name}</h1>
-                <p className="text-primary-foreground/80">سامانه‌ی یکپارچه‌ی مدیریت خدمات هلپرمی</p>
+                <p className="text-primary-foreground/80">سامانه‌ی یکپارچه‌ی مدیریت خدمات هلپا24</p>
               </div>
             </div>
 

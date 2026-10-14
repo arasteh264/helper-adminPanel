@@ -4,7 +4,7 @@ import { Users } from "./_components/users";
 
 export const metadata: Metadata = {
   title: "مدیریت کاربران",
-  description: "فهرست و مدیریت کاربران پنل هلپر",
+  description: "فهرست و مدیریت کاربران پنل هلپا24",
 };
 
 export default function Page() {

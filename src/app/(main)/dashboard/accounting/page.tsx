@@ -4,7 +4,7 @@ import { AccountingPage } from "./_components/accounting-page";
 
 export const metadata: Metadata = {
   title: "گزارش مالی",
-  description: "نمای کلی وضعیت مالی پنل هلپرمی",
+  description: "نمای کلی وضعیت مالی پنل هلپا24",
 };
 
 export default function Page() {

@@ -99,7 +99,7 @@ export function OperationsDashboard() {
     <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-muted-foreground text-sm">پنل مدیریت هلپرمی</p>
+          <p className="text-muted-foreground text-sm">پنل مدیریت هلپا24</p>
           <h1 className="mt-1 font-semibold text-2xl tracking-tight">نمای کلی عملیات</h1>
           <p className="mt-2 text-muted-foreground text-sm">وضعیت موارد مهم و دسترسی سریع به بخش‌های مدیریتی</p>
         </div>

@@ -42,7 +42,7 @@ const emptyPost: BlogPostInput = {
   excerpt: "",
   category: "",
   categorySlug: "",
-  authorName: "تحریریه هلپر",
+  authorName: "تحریریه هلپا24",
   authorRole: "راهنمای خدمات",
   content: [],
   coverImage: null,
@@ -315,7 +315,7 @@ export function BlogManagement() {
           <p className="text-sm font-medium text-muted-foreground">محتوا و بهینه‌سازی جست‌وجو</p>
           <h1 className="mt-1 flex items-center gap-2 text-2xl font-bold">
             <BookOpenText className="size-6 text-primary" />
-            وبلاگ هلپر
+            وبلاگ هلپا24
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             پیش‌نویس بسازید، اطلاعات SEO را تکمیل کنید و مقاله را منتشر کنید.

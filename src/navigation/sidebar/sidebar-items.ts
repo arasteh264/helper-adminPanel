@@ -1,6 +1,7 @@
 import {
   Banknote,
   BookOpenText,
+  Camera,
   ChartNoAxesCombined,
   ClipboardList,
   CreditCard,
@@ -10,6 +11,7 @@ import {
   Percent,
   ScrollText,
   Send,
+  ShieldCheck,
   Stethoscope,
   Users,
 } from "lucide-react";
@@ -68,17 +70,17 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 2,
-    label: "صف‌های نیازمند اقدام",
+    label: "صف بررسی",
     items: [
       {
         id: "pending-providers",
-        title: "ثبت‌نام‌های در انتظار تأیید",
+        title: "تأیید متخصصان",
         url: "/dashboard/pending-providers",
         icon: Users,
       },
       {
         id: "service-requests",
-        title: "در انتظار بررسی مدیر",
+        title: "تأیید درخواست‌ها",
         url: "/dashboard/services/review",
         icon: ClipboardList,
       },
@@ -92,7 +94,67 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 3,
-    label: "مالی و پرداخت‌ها",
+    label: "درخواست‌ها و پیام‌ها",
+    items: [
+      {
+        id: "all-service-requests",
+        title: "همه درخواست‌های سرویس",
+        url: "/dashboard/services",
+        icon: ClipboardList,
+      },
+      {
+        id: "conversations",
+        title: "گفت‌وگوها",
+        url: "/dashboard/conversations",
+        icon: MessageSquareText,
+      },
+    ],
+  },
+  {
+    id: 4,
+    label: "کاربران و متخصصان",
+    items: [
+      {
+        id: "providers",
+        title: "فهرست متخصصان",
+        url: "/dashboard/providers",
+        icon: Users,
+      },
+      {
+        id: "provider-invitations",
+        title: "دعوت متخصص",
+        url: "/dashboard/providers/invitations",
+        icon: Send,
+      },
+      {
+        id: "users",
+        title: "کاربران",
+        url: "/dashboard/users",
+        icon: Users,
+      },
+    ],
+  },
+  {
+    id: 5,
+    label: "استوری متخصصان",
+    items: [
+      {
+        id: "provider-stories",
+        title: "بررسی استوری‌ها",
+        url: "/dashboard/provider-stories",
+        icon: Camera,
+      },
+      {
+        id: "provider-story-access",
+        title: "مجوز انتشار",
+        url: "/dashboard/provider-stories/access",
+        icon: ShieldCheck,
+      },
+    ],
+  },
+  {
+    id: 6,
+    label: "مالی و درآمد",
     items: [
       {
         id: "accounting",
@@ -101,8 +163,14 @@ export const sidebarItems: NavGroup[] = [
         icon: Banknote,
         subItems: [
           {
+            id: "financial-overview",
+            title: "گزارش درآمد و سود",
+            url: "/dashboard/accounting",
+            icon: ChartNoAxesCombined,
+          },
+          {
             id: "provider-payouts",
-            title: "درخواست‌های برداشت",
+            title: "برداشت متخصصان",
             url: "/dashboard/accounting/payouts",
             icon: Banknote,
           },
@@ -111,12 +179,6 @@ export const sidebarItems: NavGroup[] = [
             title: "پرداخت‌های مشتریان",
             url: "/dashboard/accounting/payments",
             icon: CreditCard,
-          },
-          {
-            id: "financial-overview",
-            title: "گزارش مالی",
-            url: "/dashboard/accounting",
-            icon: ChartNoAxesCombined,
           },
           {
             id: "wallet-ledger",
@@ -135,44 +197,8 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 4,
-    label: "مدیریت کاربران و سرویس‌ها",
-    items: [
-      {
-        id: "all-service-requests",
-        title: "همه‌ی درخواست‌های سرویس",
-        url: "/dashboard/services",
-        icon: ClipboardList,
-      },
-      {
-        id: "providers",
-        title: "فهرست متخصصان",
-        url: "/dashboard/providers",
-        icon: Users,
-      },
-      {
-        id: "provider-invitations",
-        title: "دعوت متخصص با پیامک",
-        url: "/dashboard/providers/invitations",
-        icon: Send,
-      },
-      {
-        id: "users",
-        title: "کاربران",
-        url: "/dashboard/users",
-        icon: Users,
-      },
-      {
-        id: "conversations",
-        title: "گفت‌وگوها",
-        url: "/dashboard/conversations",
-        icon: MessageSquareText,
-      },
-    ],
-  },
-  {
-    id: 5,
-    label: "محتوا و تنظیمات پایه",
+    id: 7,
+    label: "محتوا و تخصص‌ها",
     items: [
       {
         id: "specialties",
@@ -182,19 +208,19 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         id: "blog",
-        title: "مدیریت وبلاگ",
+        title: "وبلاگ",
         url: "/dashboard/blog",
         icon: BookOpenText,
       },
     ],
   },
   {
-    id: 6,
-    label: "گزارش و پیگیری",
+    id: 8,
+    label: "سوابق مدیریت",
     items: [
       {
         id: "audit-logs",
-        title: "سوابق اقدامات مدیران",
+        title: "اقدامات مدیران",
         url: "/dashboard/audit-logs",
         icon: ScrollText,
       },
