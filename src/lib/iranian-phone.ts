@@ -17,6 +17,8 @@ export function normalizeIranianMobile(value: string): string | null {
     nationalPhone = `0${phone.slice(4)}`;
   } else if (phone.startsWith("98") && phone.length === 12) {
     nationalPhone = `0${phone.slice(2)}`;
+  } else if (/^9\d{9}$/.test(phone)) {
+    nationalPhone = `0${phone}`;
   }
 
   return /^09\d{9}$/.test(nationalPhone) ? nationalPhone : null;

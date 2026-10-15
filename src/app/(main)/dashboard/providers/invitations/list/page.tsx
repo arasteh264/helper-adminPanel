@@ -1,0 +1,11 @@
+import type { Metadata } from "next";
+
+import { ProviderInvitations } from "../../_components/provider-invitations";
+
+export const metadata: Metadata = {
+  title: "فهرست دعوت‌شدگان",
+};
+
+export default function Page() {
+  return <ProviderInvitations view="list" />;
+}

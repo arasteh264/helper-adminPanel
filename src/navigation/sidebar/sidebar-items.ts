@@ -152,9 +152,15 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         id: "provider-invitations",
-        title: "دعوت متخصص با پیامک",
+        title: "دعوت متخصص",
         url: "/dashboard/providers/invitations",
         icon: Send,
+      },
+      {
+        id: "provider-invitation-list",
+        title: "فهرست دعوت‌شدگان",
+        url: "/dashboard/providers/invitations/list",
+        icon: ClipboardList,
       },
       {
         id: "users",
