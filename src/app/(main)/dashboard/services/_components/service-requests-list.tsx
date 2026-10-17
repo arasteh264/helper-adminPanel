@@ -194,6 +194,9 @@ export function ServiceRequestsList({ initialStatus }: { initialStatus?: Service
           <Button asChild size="sm" variant={initialStatus === "DISPUTED" ? "default" : "outline"}>
             <Link href="/dashboard/services/disputes">اختلاف‌ها</Link>
           </Button>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/dashboard/services/cancellations">درخواست‌های لغو متخصص</Link>
+          </Button>
           <Button asChild size="sm" variant={!initialStatus ? "default" : "outline"}>
             <Link href="/dashboard/services">همه‌ی درخواست‌ها</Link>
           </Button>

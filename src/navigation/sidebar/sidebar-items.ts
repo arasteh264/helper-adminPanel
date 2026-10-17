@@ -88,6 +88,12 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/services/disputes",
         icon: ClipboardList,
       },
+      {
+        id: "provider-cancellations",
+        title: "درخواست‌های لغو متخصص",
+        url: "/dashboard/services/cancellations",
+        icon: ClipboardList,
+      },
     ],
   },
   {
