@@ -1,6 +1,6 @@
 "use client";
 
-import { type ChangeEvent, type FormEvent, type MouseEvent, useEffect, useState } from "react";
+import { type FormEvent, type MouseEvent, useEffect, useState } from "react";
 
 import Image, { type ImageProps } from "next/image";
 
@@ -8,6 +8,7 @@ import { FileImage, LoaderCircle, Pencil, Plus, RefreshCw, Trash2 } from "lucide
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
+import { FileUpload } from "@/components/file-upload";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,13 +19,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Attachment,
-  AttachmentContent,
-  AttachmentDescription,
-  AttachmentMedia,
-  AttachmentTitle,
-} from "@/components/ui/attachment";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -201,25 +195,8 @@ function IconField({
   onRemoveCurrentIcon: () => void;
   onRestoreCurrentIcon: () => void;
 }) {
-  function selectFile(event: ChangeEvent<HTMLInputElement>) {
-    const selected = event.target.files?.[0];
-    if (!selected) return;
-    if (!selected.type.startsWith("image/")) {
-      toast.error("فقط فایل تصویری قابل انتخاب است");
-      event.target.value = "";
-      return;
-    }
-    if (selected.size > MAX_ICON_SIZE) {
-      toast.error("حجم آیکون نباید بیشتر از ۲ مگابایت باشد");
-      event.target.value = "";
-      return;
-    }
-    onChange(selected);
-  }
-
   return (
     <div className="grid gap-2">
-      <Label htmlFor="specialty-icon">تصویر دسته یا خدمت</Label>
       {(icon || slug) && !currentIconRemoved ? (
         <div className="grid gap-2">
           <div className="relative aspect-[16/9] overflow-hidden rounded-xl border bg-muted">
@@ -257,30 +234,16 @@ function IconField({
           </Button>
         </div>
       ) : null}
-      {file ? (
-        <Attachment className="w-full">
-          <AttachmentMedia>
-            <FileImage />
-          </AttachmentMedia>
-          <AttachmentContent>
-            <AttachmentTitle>{file.name}</AttachmentTitle>
-            <AttachmentDescription>{(file.size / 1024).toFixed(0)} کیلوبایت</AttachmentDescription>
-          </AttachmentContent>
-          <Button
-            type="button"
-            size="icon-xs"
-            variant="ghost"
-            aria-label="حذف فایل انتخاب‌شده"
-            onClick={() => onChange()}
-          >
-            <Trash2 />
-          </Button>
-        </Attachment>
-      ) : null}
-      <Input key={file?.name ?? "empty"} id="specialty-icon" type="file" accept="image/*" onChange={selectFile} />
-      <p className="text-muted-foreground text-xs">
-        عکس واقعی و افقی با نسبت ۱۶:۹ بهتر دیده می‌شود · حداکثر حجم: ۲ مگابایت
-      </p>
+      <FileUpload
+        id={`specialty-icon-${assetType}-${slug || "new"}`}
+        label="تصویر دسته یا خدمت"
+        files={file ? [file] : []}
+        onFilesChange={(files) => onChange(files[0])}
+        accept="image/*"
+        maxFiles={1}
+        maxFileSizeBytes={MAX_ICON_SIZE}
+        description="عکس واقعی و افقی با نسبت ۱۶:۹ بهتر دیده می‌شود."
+      />
     </div>
   );
 }
