@@ -17,13 +17,13 @@ export function ServiceRequestReviewSettings() {
     queryKey: ["service-request-review-settings"],
     enabled: Boolean(session?.accessToken),
     queryFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return adminApiFetch<ReviewSettings>("/admin/service-requests/review-settings", session.accessToken);
     },
   });
   const updateMutation = useMutation({
     mutationFn: (requireServiceRequestReview: boolean) => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return adminApiFetch<ReviewSettings>("/admin/service-requests/review-settings", session.accessToken, {
         method: "PATCH",
         body: JSON.stringify({ requireServiceRequestReview }),
@@ -33,8 +33,8 @@ export function ServiceRequestReviewSettings() {
       queryClient.setQueryData(["service-request-review-settings"], settings);
       toast.success(
         settings.requireServiceRequestReview
-          ? "بررسی مدیر برای درخواست‌های جدید فعال شد"
-          : "درخواست‌های جدید بدون بررسی مدیر ارسال می‌شوند",
+          ? "بررسی پشتیبانی برای درخواست‌های جدید فعال شد"
+          : "درخواست‌های جدید بدون بررسی پشتیبانی ارسال می‌شوند",
       );
     },
     onError: (error) => {
@@ -69,7 +69,7 @@ export function ServiceRequestReviewSettings() {
           <p className="font-medium text-sm">بررسی درخواست‌ها پیش از ارسال به متخصص</p>
           <p className="mt-1 text-muted-foreground text-xs leading-5">
             {enabled
-              ? "درخواست‌های جدید تا تأیید مدیر برای متخصصان مخفی می‌مانند."
+              ? "درخواست‌های جدید تا تأیید پشتیبانی برای متخصصان مخفی می‌مانند."
               : "درخواست‌های جدید پس از ثبت، خودکار برای متخصصان واجد شرایط ارسال می‌شوند."}
           </p>
         </div>

@@ -139,7 +139,7 @@ export function ServiceRequestDetailsPage({ requestId }: { requestId: string }) 
     queryKey: ["admin-service-request-details", requestId],
     enabled: Boolean(session?.accessToken),
     queryFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return apiFetch<ServiceRequestDetails>(
         `/admin/service-requests/${encodeURIComponent(requestId)}/details`,
         session.accessToken,
@@ -148,7 +148,7 @@ export function ServiceRequestDetailsPage({ requestId }: { requestId: string }) 
   });
   const cancelMutation = useMutation({
     mutationFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return apiFetch<{ status: "CANCELLED" }>(
         `/admin/service-requests/${encodeURIComponent(requestId)}`,
         session.accessToken,
@@ -167,7 +167,7 @@ export function ServiceRequestDetailsPage({ requestId }: { requestId: string }) 
   });
   const reviewMutation = useMutation({
     mutationFn: async (decision: "APPROVE" | "REJECT") => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return apiFetch<{ id: string; status: string }>(
         `/admin/service-requests/${encodeURIComponent(requestId)}/review`,
         session.accessToken,
@@ -225,7 +225,7 @@ export function ServiceRequestDetailsPage({ requestId }: { requestId: string }) 
         {sessionStatus === "authenticated" && !session?.accessToken && (
           <Card>
             <CardContent className="py-10 text-center text-sm" role="alert">
-              نشست مدیر معتبر نیست. لطفاً دوباره وارد پنل شوید.
+              نشست پشتیبانی معتبر نیست. لطفاً دوباره وارد پنل شوید.
             </CardContent>
           </Card>
         )}
@@ -253,7 +253,7 @@ export function ServiceRequestDetailsPage({ requestId }: { requestId: string }) 
                 </CardHeader>
                 <CardContent className="grid gap-4">
                   <p className="text-muted-foreground text-sm leading-6">
-                    تا زمان تأیید مدیر، این درخواست برای متخصصان نمایش داده نمی‌شود. در صورت رد، دلیل برای مشتری قابل
+                    تا زمان تأیید پشتیبانی، این درخواست برای متخصصان نمایش داده نمی‌شود. در صورت رد، دلیل برای مشتری قابل
                     مشاهده خواهد بود.
                   </p>
                   <label className="grid gap-2 font-medium text-sm">

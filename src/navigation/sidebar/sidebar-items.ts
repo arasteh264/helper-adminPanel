@@ -78,7 +78,7 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         id: "service-requests",
-        title: "در انتظار بررسی مدیر",
+        title: "در انتظار بررسی پشتیبانی",
         url: "/dashboard/services/review",
         icon: ClipboardList,
       },
@@ -92,6 +92,12 @@ export const sidebarItems: NavGroup[] = [
         id: "provider-cancellations",
         title: "درخواست‌های لغو متخصص",
         url: "/dashboard/services/cancellations",
+        icon: ClipboardList,
+      },
+      {
+        id: "service-price-adjustments",
+        title: "اصلاح مبلغ در انتظار بررسی",
+        url: "/dashboard/services/price-adjustments",
         icon: ClipboardList,
       },
     ],
@@ -200,7 +206,7 @@ export const sidebarItems: NavGroup[] = [
     items: [
       {
         id: "audit-logs",
-        title: "سوابق اقدامات مدیران",
+        title: "سوابق اقدامات پشتیبانی",
         url: "/dashboard/audit-logs",
         icon: ScrollText,
       },

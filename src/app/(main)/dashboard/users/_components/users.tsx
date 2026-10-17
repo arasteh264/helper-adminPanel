@@ -38,7 +38,7 @@ export function Users() {
     queryKey: ["admin-users", pagination.pageIndex, pagination.pageSize, searchQuery],
     enabled: Boolean(session?.accessToken),
     queryFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست");
 
       return getUsers({
         page: pagination.pageIndex + 1,

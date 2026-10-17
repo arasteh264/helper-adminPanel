@@ -33,7 +33,7 @@ export function AccountStatusAction({ targetType, targetId, currentStatus, name 
   const nextStatus = currentStatus === "SUSPENDED" ? "ACTIVE" : "SUSPENDED";
   const mutation = useMutation({
     mutationFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return adminApiFetch(
         `/admin/${targetType === "user" ? "users" : "providers"}/${encodeURIComponent(targetId)}/status`,
         session.accessToken,
@@ -71,7 +71,7 @@ export function AccountStatusAction({ targetType, targetId, currentStatus, name 
           <DialogHeader>
             <DialogTitle>{nextStatus === "SUSPENDED" ? "تعلیق حساب" : "فعال‌سازی دوباره"}</DialogTitle>
             <DialogDescription>
-              وضعیت حساب «{name}» تغییر می‌کند. برای ثبت در سابقه‌ی مدیر، دلیل را وارد کنید.
+              وضعیت حساب «{name}» تغییر می‌کند. برای ثبت در سابقه‌ی پشتیبانی، دلیل را وارد کنید.
               {targetType === "provider" && nextStatus === "SUSPENDED"
                 ? " دسترس‌پذیری متخصص هم غیرفعال می‌شود؛ فعال‌سازی حساب، دسترس‌پذیری را خودکار روشن نمی‌کند."
                 : ""}

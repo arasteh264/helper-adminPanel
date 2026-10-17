@@ -36,7 +36,7 @@ export type ServiceRequestRow = {
 
 export const statusMeta: Record<ServiceRequestStatus, { label: string; dotClass: string }> = {
   PENDING_ADMIN_REVIEW: {
-    label: "در انتظار بررسی مدیر",
+    label: "در انتظار بررسی پشتیبانی",
     dotClass: "bg-violet-500",
   },
   OPEN: { label: "باز", dotClass: "bg-blue-500" },

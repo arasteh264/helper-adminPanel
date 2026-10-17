@@ -14,7 +14,7 @@ export type UserRow = {
 export const roleLabels: Record<UserRole, string> = {
   CUSTOMER: "مشتری",
   PROVIDER: "ارائه‌دهنده",
-  ADMIN: "مدیر",
+  ADMIN: "پشتیبانی",
 };
 
 export const statusMeta: Record<UserStatus, { label: string; badgeClass: string; dotClass: string }> = {

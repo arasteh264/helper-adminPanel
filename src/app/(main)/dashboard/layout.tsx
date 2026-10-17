@@ -36,8 +36,8 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
         variant={variant}
         collapsible={collapsible}
         user={{
-          name: session.user?.name ?? "مدیر",
-          email: session.user?.email ?? "حساب مدیر",
+          name: session.user?.name ?? "پشتیبانی",
+          email: session.user?.email ?? "حساب پشتیبانی",
         }}
       />
       <SidebarInset

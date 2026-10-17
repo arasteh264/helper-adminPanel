@@ -70,7 +70,7 @@ export function PaymentsTab() {
     enabled: Boolean(session?.accessToken),
     refetchInterval: 60_000,
     queryFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return adminApiFetch<ReconciliationResponse>("/admin/operations/reconciliation", session.accessToken);
     },
   });

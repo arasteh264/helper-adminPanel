@@ -47,7 +47,7 @@ const labels: Record<string, string> = {
   DISPUTE_RESOLVED: "تعیین‌تکلیف اختلاف سرویس",
   SERVICE_REQUEST_APPROVED: "تأیید درخواست سرویس",
   SERVICE_REQUEST_REJECTED: "رد درخواست سرویس",
-  SERVICE_REQUEST_REVIEW_SETTING_UPDATED: "تغییر نیاز به بررسی درخواست توسط مدیر",
+  SERVICE_REQUEST_REVIEW_SETTING_UPDATED: "تغییر نیاز به بررسی درخواست توسط پشتیبانی",
   PROVIDER_APPROVED: "تأیید ثبت‌نام متخصص",
   PROVIDER_REJECTED: "رد ثبت‌نام متخصص",
   PROVIDER_AUTO_APPROVED_AFTER_DOCUMENTS: "تأیید خودکار پس از تکمیل مدارک",
@@ -100,7 +100,7 @@ const fieldLabels: Record<string, string> = {
   rejectReason: "دلیل رد",
   resolutionNote: "یادداشت نتیجه‌ی اختلاف",
   commissionRate: "نرخ کمیسیون",
-  requireServiceRequestReview: "بررسی درخواست توسط مدیر",
+  requireServiceRequestReview: "بررسی درخواست توسط پشتیبانی",
   amount: "مبلغ",
   amountToman: "مبلغ",
   balanceAfter: "موجودی پس از تغییر",
@@ -135,7 +135,7 @@ const enumLabels: Record<string, string> = {
   CANCELLED: "لغوشده",
   EXPIRED: "منقضی‌شده",
   DISPUTED: "دارای اختلاف",
-  PENDING_ADMIN_REVIEW: "در انتظار بررسی مدیر",
+  PENDING_ADMIN_REVIEW: "در انتظار بررسی پشتیبانی",
   PAID: "پرداخت‌شده",
   FAILED: "ناموفق",
   REFUNDED: "بازپرداخت‌شده",
@@ -199,7 +199,7 @@ function stateLabel(value: unknown) {
 function reasonLabel(item: AuditLog) {
   if (item.action === "SERVICE_REQUEST_REVIEW_SETTING_UPDATED") {
     const enabled = item.reason.endsWith("=true");
-    return enabled ? "بررسی مدیر برای درخواست‌های جدید فعال شد" : "بررسی مدیر برای درخواست‌های جدید غیرفعال شد";
+    return enabled ? "بررسی پشتیبانی برای درخواست‌های جدید فعال شد" : "بررسی پشتیبانی برای درخواست‌های جدید غیرفعال شد";
   }
   return item.reason || "دلیلی ثبت نشده است";
 }
@@ -212,7 +212,7 @@ export default function AuditLogsPage() {
     queryKey: ["admin-audit-logs", page, filter],
     enabled: Boolean(session?.accessToken),
     queryFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       const params = new URLSearchParams({ page: String(page), pageSize: "20" });
       if (filter !== "ALL") params.set("targetType", filter);
       return adminApiFetch<AuditPage>(`/admin/audit-logs?${params}`, session.accessToken);
@@ -222,7 +222,7 @@ export default function AuditLogsPage() {
   return (
     <div className="grid gap-4">
       <header>
-        <h1 className="font-semibold text-2xl">سابقه‌ی اقدامات مدیران</h1>
+        <h1 className="font-semibold text-2xl">سابقه‌ی اقدامات پشتیبانی</h1>
         <p className="mt-1 text-muted-foreground text-sm">دلایل و تغییر وضعیت کاربران، متخصصان و برداشت‌ها ثبت می‌شود.</p>
       </header>
       <Card>
@@ -278,7 +278,7 @@ export default function AuditLogsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>اقدام</TableHead>
-                    <TableHead>مدیر</TableHead>
+                    <TableHead>پشتیبانی</TableHead>
                     <TableHead>موضوع</TableHead>
                     <TableHead>دلیل</TableHead>
                     <TableHead>تغییرات</TableHead>
