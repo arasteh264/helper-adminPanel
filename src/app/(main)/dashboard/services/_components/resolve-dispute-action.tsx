@@ -60,14 +60,14 @@ export function ResolveDisputeAction({ request }: { request: ServiceRequestRow }
     enabled: open && Boolean(session?.accessToken),
     queryFn: async () => {
       const token = session?.accessToken;
-      if (!token) throw new Error("نشست مدیر در دسترس نیست");
+      if (!token) throw new Error("نشست پشتیبانی در دسترس نیست");
       return apiFetch<DisputeDetails>(`/admin/service-requests/${encodeURIComponent(request.id)}/dispute`, token);
     },
   });
   const mutation = useMutation({
     mutationFn: async () => {
       const token = session?.accessToken;
-      if (!token) throw new Error("نشست مدیر در دسترس نیست");
+      if (!token) throw new Error("نشست پشتیبانی در دسترس نیست");
       return apiFetch(`/admin/service-requests/${encodeURIComponent(request.id)}/dispute`, token, {
         method: "PATCH",
         body: JSON.stringify({ resolution, reason: reason.trim() }),
@@ -87,7 +87,7 @@ export function ResolveDisputeAction({ request }: { request: ServiceRequestRow }
   const replyMutation = useMutation({
     mutationFn: async () => {
       const token = session?.accessToken;
-      if (!token) throw new Error("نشست مدیر در دسترس نیست");
+      if (!token) throw new Error("نشست پشتیبانی در دسترس نیست");
       return apiFetch(`/admin/service-requests/${encodeURIComponent(request.id)}/dispute/messages`, token, {
         method: "POST",
         body: JSON.stringify({ body: reply.trim() }),

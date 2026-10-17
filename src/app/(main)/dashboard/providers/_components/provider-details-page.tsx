@@ -166,7 +166,7 @@ export function ProviderDetailsPage({ providerId }: { providerId: string }) {
     queryKey: ["admin-provider-details", providerId],
     enabled: Boolean(session?.accessToken),
     queryFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return adminApiFetch<ProviderDetails>(
         `/admin/providers/${encodeURIComponent(providerId)}/details`,
         session.accessToken,
@@ -177,7 +177,7 @@ export function ProviderDetailsPage({ providerId }: { providerId: string }) {
     queryKey: ["admin-provider-declines", providerId],
     enabled: Boolean(session?.accessToken),
     queryFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return adminApiFetch<ProviderDecline[]>(
         `/admin/providers/${encodeURIComponent(providerId)}/declines`,
         session.accessToken,
@@ -190,7 +190,7 @@ export function ProviderDetailsPage({ providerId }: { providerId: string }) {
     enabled: Boolean(session?.accessToken),
     queryFn: async (): Promise<SpecialtyOption[]> => {
       const token = session?.accessToken;
-      if (!token) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!token) throw new Error("نشست پشتیبانی در دسترس نیست.");
 
       const groups = unwrapData(
         await adminApiFetch<SpecialtyGroupOption[] | { data: SpecialtyGroupOption[] }>(
@@ -238,7 +238,7 @@ export function ProviderDetailsPage({ providerId }: { providerId: string }) {
 
   const updateMutation = useMutation({
     mutationFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return adminApiFetch<{ updated: boolean }>(
         `/admin/providers/${encodeURIComponent(providerId)}/details`,
         session.accessToken,
@@ -268,7 +268,7 @@ export function ProviderDetailsPage({ providerId }: { providerId: string }) {
         queryClient.invalidateQueries({ queryKey: ["providers"] }),
         queryClient.invalidateQueries({ queryKey: ["admin-audit-logs"] }),
       ]);
-      toast.success("اطلاعات متخصص به‌روزرسانی و در سوابق مدیران ثبت شد.");
+      toast.success("اطلاعات متخصص به‌روزرسانی و در سوابق پشتیبانی ثبت شد.");
       setEditing(false);
     },
     onError: (error) => toast.error(error instanceof Error ? error.message : "ویرایش اطلاعات متخصص ناموفق بود."),
@@ -512,7 +512,7 @@ export function ProviderDetailsPage({ providerId }: { providerId: string }) {
               </div>
               <div className="grid gap-1">
                 <CardTitle>اصلاح اطلاعات متخصص</CardTitle>
-                <CardDescription>تغییرات همراه با دلیل و اطلاعات قبل/بعد در سوابق مدیران ثبت می‌شود.</CardDescription>
+                <CardDescription>تغییرات همراه با دلیل و اطلاعات قبل/بعد در سوابق پشتیبانی ثبت می‌شود.</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -738,7 +738,7 @@ export function ProviderDetailsPage({ providerId }: { providerId: string }) {
                   <div className="grid gap-1">
                     <Label htmlFor="provider-edit-reason">دلیل اصلاح (اجباری)</Label>
                     <p className="text-muted-foreground text-xs">
-                      این توضیح برای شفافیت و پیگیری در سابقه‌ی اقدامات مدیر ثبت می‌شود.
+                      این توضیح برای شفافیت و پیگیری در سابقه‌ی اقدامات پشتیبانی ثبت می‌شود.
                     </p>
                   </div>
                 </div>

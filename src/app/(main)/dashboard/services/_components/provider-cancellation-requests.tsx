@@ -63,13 +63,13 @@ export function ProviderCancellationRequests() {
     queryKey: ["provider-cancellation-requests"],
     enabled: Boolean(accessToken),
     queryFn: () => {
-      if (!accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return apiFetch<CancellationRequest[]>("/admin/service-requests/cancellation-requests", accessToken);
     },
   });
   const reviewMutation = useMutation({
     mutationFn: async (input: { id: string; decision: "APPROVE" | "REJECT" }) => {
-      if (!accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return apiFetch<{ id: string; status: string }>(
         `/admin/service-requests/${encodeURIComponent(input.id)}/cancellation-review`,
         accessToken,
@@ -124,7 +124,7 @@ export function ProviderCancellationRequests() {
       <header>
         <h1 className="font-semibold text-2xl">درخواست‌های لغو متخصص</h1>
         <p className="mt-1 text-muted-foreground text-sm">
-          متخصص پس از پذیرش یا شروع کار، برای لغو باید دلیل ثبت کند و تصمیم نهایی با مدیر است.
+          متخصص پس از پذیرش یا شروع کار، برای لغو باید دلیل ثبت کند و تصمیم نهایی با پشتیبانی است.
         </p>
       </header>
       {requests.length === 0 ? (
@@ -196,7 +196,7 @@ export function ProviderCancellationRequests() {
                   ) : null}
                 </div>
                 <label htmlFor={`decision-note-${request.id}`} className="grid gap-1.5 text-sm">
-                  توضیح تصمیم مدیر {note.trim().length < 5 ? "(برای رد الزامی است)" : ""}
+                  توضیح تصمیم پشتیبانی {note.trim().length < 5 ? "(برای رد الزامی است)" : ""}
                   <Textarea
                     id={`decision-note-${request.id}`}
                     value={note}

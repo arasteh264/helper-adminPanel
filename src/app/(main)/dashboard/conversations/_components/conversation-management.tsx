@@ -55,7 +55,7 @@ function formatDate(value: string | null | undefined) {
 }
 
 function errorMessage(error: unknown, fallback: string) {
-  if (error instanceof ApiError && error.status === 401) return "نشست مدیر معتبر نیست؛ دوباره وارد پنل شوید.";
+  if (error instanceof ApiError && error.status === 401) return "نشست پشتیبانی معتبر نیست؛ دوباره وارد پنل شوید.";
   if (error instanceof ApiError && error.status === 403) return "حساب شما مجوز مدیریت گفتگوها را ندارد.";
   if (error instanceof TypeError) return "ارتباط با سرویس گفتگو برقرار نشد؛ اتصال API را بررسی کنید.";
   return error instanceof Error ? error.message : fallback;

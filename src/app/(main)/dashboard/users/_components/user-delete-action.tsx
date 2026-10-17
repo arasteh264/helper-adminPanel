@@ -26,7 +26,7 @@ export function UserDeleteAction({ userId, name }: { userId: string; name: strin
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return adminApiFetch<{ id: string; cleanupWarning?: string }>(
         `/users/${encodeURIComponent(userId)}`,
         session.accessToken,

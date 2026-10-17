@@ -34,7 +34,7 @@ function useSpecialists() {
     queryKey: ["admin-specialist-insights"],
     enabled: Boolean(session?.accessToken),
     queryFn: () => {
-      if (!session?.accessToken) throw new Error("نشست مدیر در دسترس نیست.");
+      if (!session?.accessToken) throw new Error("نشست پشتیبانی در دسترس نیست.");
       return apiFetch<SpecialistInsightsData>("/admin/providers/analytics", session.accessToken);
     },
     refetchInterval: 120_000,

@@ -36,13 +36,13 @@ function getPageContent(initialStatus?: ServiceRequestStatus) {
   switch (initialStatus) {
     case "PENDING_ADMIN_REVIEW":
       return {
-        title: "درخواست‌های در انتظار بررسی مدیر",
-        description: "درخواست‌هایی که برای تصمیم‌گیری مدیر در صف هستند.",
+        title: "درخواست‌های در انتظار بررسی پشتیبانی",
+        description: "درخواست‌هایی که برای تصمیم‌گیری پشتیبانی در صف هستند.",
       };
     case "DISPUTED":
       return {
         title: "درخواست‌های اختلاف‌دار",
-        description: "درخواست‌هایی که اختلاف آن‌ها نیازمند رسیدگی مدیر است.",
+        description: "درخواست‌هایی که اختلاف آن‌ها نیازمند رسیدگی پشتیبانی است.",
       };
     default:
       return {
@@ -189,7 +189,7 @@ export function ServiceRequestsList({ initialStatus }: { initialStatus?: Service
         <p className="mt-1 text-muted-foreground text-sm">{pageDescription}</p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Button asChild size="sm" variant={initialStatus === "PENDING_ADMIN_REVIEW" ? "default" : "outline"}>
-            <Link href="/dashboard/services/review">در انتظار بررسی مدیر</Link>
+            <Link href="/dashboard/services/review">در انتظار بررسی پشتیبانی</Link>
           </Button>
           <Button asChild size="sm" variant={initialStatus === "DISPUTED" ? "default" : "outline"}>
             <Link href="/dashboard/services/disputes">اختلاف‌ها</Link>
@@ -247,7 +247,7 @@ export function ServiceRequestsList({ initialStatus }: { initialStatus?: Service
                 <SelectContent position="popper" align="start">
                   <SelectGroup>
                     <SelectItem value="All">همه</SelectItem>
-                    <SelectItem value="PENDING_ADMIN_REVIEW">در انتظار بررسی مدیر</SelectItem>
+                    <SelectItem value="PENDING_ADMIN_REVIEW">در انتظار بررسی پشتیبانی</SelectItem>
                     <SelectItem value="OPEN">باز</SelectItem>
                     <SelectItem value="OFFER_ACCEPTED">پیشنهاد پذیرفته‌شده</SelectItem>
                     <SelectItem value="CUSTOMER_CONFIRMATION_PENDING">در انتظار تأیید مشتری</SelectItem>
