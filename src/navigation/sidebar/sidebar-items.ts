@@ -4,6 +4,7 @@ import {
   ChartNoAxesCombined,
   ClipboardList,
   CreditCard,
+  GalleryVerticalEnd,
   LayoutDashboard,
   type LucideIcon,
   MessageSquareText,
@@ -164,7 +165,7 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         id: "provider-invitations",
-        title: "دعوت متخصص با پیامک",
+        title: "دعوت متخصصان و فهرست دعوت‌ها",
         url: "/dashboard/providers/invitations",
         icon: Send,
       },
@@ -186,6 +187,32 @@ export const sidebarItems: NavGroup[] = [
     id: 5,
     label: "محتوا و تنظیمات پایه",
     items: [
+      {
+        id: "provider-stories",
+        title: "مدیریت استوری",
+        url: "/dashboard/provider-stories",
+        icon: GalleryVerticalEnd,
+        subItems: [
+          {
+            id: "provider-stories-review",
+            title: "بررسی استوری‌ها",
+            url: "/dashboard/provider-stories",
+            icon: GalleryVerticalEnd,
+          },
+          {
+            id: "provider-stories-access",
+            title: "مجوز متخصصان",
+            url: "/dashboard/provider-stories/access",
+            icon: Users,
+          },
+          {
+            id: "provider-stories-settings",
+            title: "محدودیت فایل‌ها",
+            url: "/dashboard/provider-stories/settings",
+            icon: CreditCard,
+          },
+        ],
+      },
       {
         id: "specialties",
         title: "گروه‌ها و تخصص‌ها",

@@ -5,7 +5,7 @@ import { API_BASE_URL } from "@/lib/api-url";
 type ApiUser = {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
   phone: string;
   role: UserRole;
   status: UserStatus;

@@ -43,7 +43,7 @@ export const usersColumns: ColumnDef<DataTableFeatures, UserRow>[] = [
     header: "ایمیل",
     cell: ({ row }) => (
       <div dir="ltr" className="text-start text-muted-foreground text-sm">
-        {row.original.email}
+        {row.original.email ?? "—"}
       </div>
     ),
   },
